@@ -42,4 +42,17 @@ MibitTip ------------------------------------------
   its partner.
  
   This was designed for lemonPOS project.
+
+
+MibitDialog --------------------------------------
+
+  This class is used to display animated dialogs
+  appering on screen's top or middle. 
+  Are svg themed and borderless.
+
+  Can contain one icon and, text message, and a 
+  close button.
+
 ----------------------------------------------------
+
+

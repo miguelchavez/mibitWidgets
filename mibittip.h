@@ -21,7 +21,7 @@
 #ifndef MIBITTIP_H
 #define MIBITTIP_H
 
-#include <QSvgWidget>tooltips
+#include <QSvgWidget>
 
 class QTimeLine;
 class QVBoxLayout;
