@@ -25,9 +25,10 @@
 
 class QTimeLine;
 class QVBoxLayout;
-class QLabel;
 class QSize;
 class QString;
+#include <QPixmap>
+#include <QLabel>
 
 enum TipPosition {tpBelow, tpAbove};
 
@@ -45,7 +46,7 @@ enum TipPosition {tpBelow, tpAbove};
   *
   *  It is resized according to its parter, and displayed
   *  horizontally centered and vertically positioned below
-  *  its partner.
+  *  or above its partner.
   *
   *  This was designed for lemonPOS project.
   *
@@ -56,7 +57,11 @@ class MibitTip : public QSvgWidget
 {
   Q_OBJECT
   public:
-    explicit MibitTip( QWidget *parent = 0, QWidget *partner = 0,  const QString &file = 0, const TipPosition &drawOn = tpBelow );
+    explicit MibitTip( QWidget *parent = 0,
+                       QWidget *partner = 0,
+                       const QString &file = 0,
+                       const QPixmap &icon = 0,
+                       const TipPosition &drawOn = tpBelow );
     virtual ~MibitTip();
 
     /**
@@ -68,6 +73,7 @@ class MibitTip : public QSvgWidget
       */
     void showTip( const QString &msg );
     void setSVG( const QString &file );
+    void setIcon(const QPixmap &icon );
     void setMaxHeight(int h) { maxHeight = h; };
     void setMaxWidth(int w) { maxWidth = w; };
 

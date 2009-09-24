@@ -25,10 +25,9 @@
 #include <QTimeLine>
 #include <QSize>
 #include <QRect>
-#include <QLabel>
 //#include <QGraphicsSvgItem
 
-MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, const TipPosition &drawOn  )
+MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, const QPixmap &icon, const TipPosition &drawOn  )
     : QSvgWidget( parent )
 {
     if (file != 0 ) {
@@ -36,7 +35,7 @@ MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, cons
         fileName = file;
     } else fileName = "";
 
-    //set temporal max h & w
+    //set temporal max h & w --- and predefined ones.
     maxWidth = 200;
     maxHeight= 200;
     setMaximumHeight(maxHeight);
@@ -53,7 +52,7 @@ MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, cons
     img    = new QLabel();
     layout = new QVBoxLayout();
     text   = new QLabel("");
-    img->setPixmap(QPixmap("important.png")); //get emblem-important icon...
+    setIcon(icon);
     img->setMaximumHeight(32);
     img->setAlignment(Qt::AlignCenter);
     if ( m_tipPosition == tpAbove ) {
@@ -109,7 +108,6 @@ void MibitTip::morph(int newSize)
         listRect.setY(below.y()-3);
         setGeometry(listRect);
         //set fixed width and height
-        setFixedHeight(newSize);
     } else {                        // here will grow from bottom to top and the image inverted
         //load the inverted background image
         //QGraphicsSvgItem svgItem(fileName);
@@ -117,14 +115,12 @@ void MibitTip::morph(int newSize)
         //QSvgRenderer *theRenderer = renderer();
         /// How to pass the rotated svg item to the renderer or QSvgWidget loader?
 
-        int newY = above.y()-newSize;
+        int newY = above.y() - newSize + 3;
         listRect.setX(above.x()+10);
         listRect.setY(newY);
         setGeometry(listRect);
-        setFixedHeight(newSize);
     }
-
-
+    setFixedHeight(newSize);
     setFixedWidth(m_partner->width()-20);
 }
 
@@ -138,6 +134,11 @@ void MibitTip::setSVG(const QString &file)
 {
     load(file); //we can load also from a Byte Array.
 }
+
+void MibitTip::setIcon(const QPixmap &icon)
+{
+     img->setPixmap(icon);
+ }
 
 
 
