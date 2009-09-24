@@ -1,8 +1,8 @@
 #include "mainview.h"
 #include "ui_mainview.h"
 
-#include "mibittip.h"
-#include "mibitdialog.h"
+#include "../mibittip.h"
+#include "../mibitdialog.h"
 
 #include <QDebug>
 #include <QTimer>
