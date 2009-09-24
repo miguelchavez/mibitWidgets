@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>mainView</string>
+   <string>mibitWidgets DEMO</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QGroupBox" name="group1">
      <property name="title">
-      <string> Group 1</string>
+      <string>Tests</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -50,30 +50,40 @@
       <item>
        <widget class="QGroupBox" name="group2">
         <property name="title">
-         <string>Group 2</string>
+         <string>Test widgets</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QTabWidget" name="tabWidget">
+           <property name="tabPosition">
+            <enum>QTabWidget::West</enum>
+           </property>
            <property name="currentIndex">
             <number>0</number>
            </property>
-           <widget class="QWidget" name="tab1">
+           <widget class="QWidget" name="Dialogs">
             <attribute name="title">
-             <string>Tab 1</string>
+             <string>Dialogs</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QPushButton" name="btnDialog2">
                <property name="text">
-                <string>Test Dialog 2</string>
+                <string>Test Slide Up Dialog</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="btnDialog3">
                <property name="text">
-                <string>Test Dialog 3</string>
+                <string>Test Grow Vertically Dialog</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnDialog4">
+               <property name="text">
+                <string>Test Grow Horizontally Dialog</string>
                </property>
               </widget>
              </item>
@@ -90,19 +100,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="edit2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QGroupBox" name="group3">
         <property name="title">
-         <string>Group 3</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignJustify|Qt::AlignVCenter</set>
@@ -111,7 +111,7 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>TextLabel</string>
+            <string>Press the next button to show its tip.</string>
            </property>
           </widget>
          </item>
