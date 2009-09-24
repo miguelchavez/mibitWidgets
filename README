@@ -35,7 +35,6 @@ MibitTip ------------------------------------------
   The concept is sometimes refered as "No dialogs on dialogs".
  
   It loads a file in SVG format and render it as the skin.
-  As it is an SVG, it can be scaled to any size.
  
   It is resized according to its parter, and displayed
   horizontally centered and vertically positioned below
@@ -47,7 +46,7 @@ MibitTip ------------------------------------------
 MibitDialog --------------------------------------
 
   This class is used to display animated dialogs
-  appering on screen's top or middle. 
+  appering on screen from top or middle. 
   Are svg themed and borderless.
 
   Can contain one icon and, text message, and a 
