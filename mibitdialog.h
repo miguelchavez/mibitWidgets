@@ -23,34 +23,51 @@
 
 #include <QSvgWidget>
 class QTimeLine;
-class QVBoxLayout;
 class QString;
-class QGridLayout;
+class QHBoxLayout;
+class QVBoxLayout;
 class QLabel;
 class QPixmap;
+class QPushButton;
 
 /**
-  * This class is used to display animated dialogs appering on screen
+  * This class is used to display animated dialogs appering on screen's
   * top or middle. Are svg themed and borderless.
   */
+
+enum AnimationType { atGrowCenterV, atGrowCenterH, atSlideDown, atSlideUp };
+enum Sizes { maxH=300, maxW=400 };
 
 class MibitDialog : public QSvgWidget
 {
 Q_OBJECT
 public:
-    MibitDialog( QWidget *parent = 0, const QString &file = 0, const QPixmap &icon = 0 );
+    MibitDialog(QWidget *parent = 0, const QString &msg = 0, const QString &file = 0, const QPixmap &icon = 0, AnimationType animation = atSlideDown );
     ~MibitDialog();
-    void showTip( const QString &msg);
+    void showDialog( const QString &msg = 0, AnimationType animation = atSlideDown );
+    // Tratar de hacer un metodo similar al QDialog::getDouble()... con static
     void setSVG(const QString &file);
+    void setIcon(const QPixmap &icon);
+    void setMessage(const QString &msg);
+    void setAnimationType(AnimationType atype) { animType = atype; }
+    void setMaxHeight(int m)   { setMaximumHeight(m); maxHeight = m; }
+    void setMaxWidth(int m)    { setMaximumWidth(m); maxWidth = m;   }
+    void setSize(int w, int h) { setMaxWidth(w); setMaxHeight(h);    }
 private:
     QTimeLine *timeLine;
     QLabel *text;
-    QGridLayout *layout;
+    QHBoxLayout *hLayout;
+    QVBoxLayout *vLayout;
     QLabel *img;
+    QPushButton *btnClose;
+    AnimationType animType;
+    QWidget *m_parent;
+    int maxWidth;
+    int maxHeight;
+
 private slots:
-    void show();  // Tratar de hacer un metodo similar al QDialog::getDouble()... con static
-    // void showDialog(const QString &msg) static;
     void animate(int step);
+    void hideDialog();
 };
 
 #endif // MIBITDIALOG_H
