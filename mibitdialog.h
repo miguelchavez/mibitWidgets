@@ -68,6 +68,7 @@ private:
 private slots:
     void animate(int step);
     void hideDialog();
+    void onAnimationFinished();
 };
 
 #endif // MIBITDIALOG_H

@@ -69,6 +69,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     timeLine = new QTimeLine(800, this); //1 second animation, check later.
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
     connect(btnClose,SIGNAL(clicked()),this, SLOT(hideDialog()));
+    connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
 }
 
 MibitDialog::~MibitDialog()
@@ -142,6 +143,14 @@ void MibitDialog::hideDialog()
 {
     timeLine->toggleDirection();//reverse!
     timeLine->start();
+}
+
+void MibitDialog::onAnimationFinished()
+{
+    if (timeLine->direction() == QTimeLine::Backward) {
+        close();
+        //qDebug()<<"Animation finished and it was in backward direction";
+    } else
 }
 
 
