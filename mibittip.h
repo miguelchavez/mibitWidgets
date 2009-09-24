@@ -27,8 +27,8 @@ class QTimeLine;
 class QVBoxLayout;
 class QSize;
 class QString;
-#include <QPixmap>
-#include <QLabel>
+class QLabel;
+class QPixmap;
 
 enum TipPosition {tpBelow, tpAbove};
 

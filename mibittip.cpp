@@ -25,6 +25,9 @@
 #include <QTimeLine>
 #include <QSize>
 #include <QRect>
+#include <QLabel>
+#include <QPixmap>
+
 //#include <QGraphicsSvgItem
 
 MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, const QPixmap &icon, const TipPosition &drawOn  )
