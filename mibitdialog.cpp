@@ -150,7 +150,7 @@ void MibitDialog::onAnimationFinished()
     if (timeLine->direction() == QTimeLine::Backward) {
         close();
         //qDebug()<<"Animation finished and it was in backward direction";
-    } else
+    }
 }
 
 
