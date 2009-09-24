@@ -35,8 +35,8 @@ class QPushButton;
   * top or middle. Are svg themed and borderless.
   */
 
-enum AnimationType { atGrowCenterV, atGrowCenterH, atSlideDown, atSlideUp };
-enum Sizes { maxH=300, maxW=400 };
+enum AnimationType { atGrowCenterV=1, atGrowCenterH=2, atSlideDown=3, atSlideUp=4 };
+enum Sizes         { maxH=300, maxW=400 };
 
 class MibitDialog : public QSvgWidget
 {
@@ -50,6 +50,7 @@ public:
     void setIcon(const QPixmap &icon);
     void setMessage(const QString &msg);
     void setAnimationType(AnimationType atype) { animType = atype; }
+    void setAnimationRate(int r) { animRate = r; }
     void setMaxHeight(int m)   { setMaximumHeight(m); maxHeight = m; }
     void setMaxWidth(int m)    { setMaximumWidth(m); maxWidth = m;   }
     void setSize(int w, int h) { setMaxWidth(w); setMaxHeight(h);    }
@@ -64,6 +65,7 @@ private:
     QWidget *m_parent;
     int maxWidth;
     int maxHeight;
+    int animRate;
 
 private slots:
     void animate(int step);

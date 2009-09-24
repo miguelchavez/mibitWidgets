@@ -24,7 +24,10 @@ mainView::mainView(QWidget *parent)
     connect(ui->btnTest3, SIGNAL(clicked()), SLOT(showTip3()));
 
 
+    connect(ui->btnDialog1, SIGNAL(clicked()), SLOT(showDialog1()));
     connect(ui->btnDialog2, SIGNAL(clicked()), SLOT(showDialog2()));
+    connect(ui->btnDialog3, SIGNAL(clicked()), SLOT(showDialog3()));
+    connect(ui->btnDialog4, SIGNAL(clicked()), SLOT(showDialog4()));
 
     QTimer::singleShot(500,this,SLOT(showDialog1()));
 
@@ -52,10 +55,20 @@ void mainView::showTip3()
 
 void mainView::showDialog1()
 {
-    dialog1->showDialog();
+    dialog1->showDialog("Dialog with a slide Down Animation", atSlideDown);
 }
 
 void mainView::showDialog2()
 {
-    dialog1->showDialog("Dialog with a slide down animation!", atSlideDown);
+    dialog1->showDialog("Dialog with a slide Up animation!", atSlideUp);
+}
+
+void mainView::showDialog3()
+{
+    dialog1->showDialog("Dialog with a Grow Vertically Animation", atGrowCenterV);
+}
+
+void mainView::showDialog4()
+{
+    dialog1->showDialog("Dialog with a Grow Horizontally Animation", atGrowCenterH);
 }

@@ -24,13 +24,14 @@ private:
     MibitTip *tip2;
     MibitTip *tip3;
     MibitDialog *dialog1;
-    MibitDialog *dialog2;
 private slots:
     void showTip1();
     void showTip2();
     void showTip3();
     void showDialog1();
     void showDialog2();
+    void showDialog3();
+    void showDialog4();
 };
 
 #endif // MAINVIEW_H

@@ -40,6 +40,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     setFixedSize(0,0); //until show we grow it
     setMaxHeight(maxH); //default sizes
     setMaxWidth(maxW);
+    animRate = 500; //default animation speed (half second rate).
 
 
     img      = new QLabel();
@@ -66,7 +67,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     vLayout->addLayout(hLayout,0);
     vLayout->addWidget(btnClose,0,Qt::AlignCenter);
 
-    timeLine = new QTimeLine(800, this); //1 second animation, check later.
+    timeLine = new QTimeLine(animRate, this); //1 second animation, check later.
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
     connect(btnClose,SIGNAL(clicked()),this, SLOT(hideDialog()));
     connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
@@ -86,11 +87,15 @@ void MibitDialog::showDialog(const QString &msg, AnimationType animation )
     show();
     //update steps for animation, now that the window is showing.
     int maxStep; int minStep = 0;
-    if ( animType == atSlideDown || animType == atSlideUp ) {
+    if ( animType == atSlideDown ) {
         maxStep = (m_parent->geometry().height()/2)-(maxHeight/2);
         minStep = -maxHeight;
         //timeLine->setCurveShape(QTimeLine::EaseOutCurve); //QTimeLine::SineCurve: Hacerlo criticamente amortiguado
-    } else if ( animType == atGrowCenterH ) maxStep = maxWidth;
+    } else if (animType == atSlideUp ) {
+        maxStep = (m_parent->geometry().height()/2)-(maxHeight/2);
+        minStep = maxHeight + m_parent->geometry().height();
+    }
+    else if ( animType == atGrowCenterH ) maxStep = maxWidth;
     else maxStep=maxHeight;
 
     timeLine->setFrameRange(minStep,maxStep);
@@ -118,11 +123,11 @@ void MibitDialog::animate(int step)
     QRect dRect;
     switch (animType) {
         case atGrowCenterV:   // Grow from Center Vertically.. to up and down
-            //
-        break;
+            break;
         case atGrowCenterH:   // Grow from Center Horizontally... from left to right
-        break;
-        case atSlideDown:    // Slide down
+            break;
+        case atSlideDown:  // slide Up
+        case atSlideUp:    // Slide down
             dRect.setX(newX);
             dRect.setY(step);
             dRect.setWidth(maxWidth);
@@ -131,11 +136,9 @@ void MibitDialog::animate(int step)
 
             setFixedHeight(maxHeight);
             setFixedWidth(maxWidth);
-        break;
-        case atSlideUp:     // Slide up
-        break;
+            break;
         default:
-        break;
+           break;
     }
 }
 
