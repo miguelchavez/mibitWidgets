@@ -29,7 +29,7 @@ class QLabel;
 class QSize;
 class QString;
 
-enum  {MAX_SIZE=150, MAX_W=200};
+enum TipPosition {tpBelow, tpAbove};
 
 
 /**
@@ -51,11 +51,12 @@ enum  {MAX_SIZE=150, MAX_W=200};
   *
   **/
 
+
 class MibitTip : public QSvgWidget
 {
   Q_OBJECT
   public:
-    explicit MibitTip( QWidget *parent = 0, QWidget *partner = 0,  const QString &file = 0 );
+    explicit MibitTip( QWidget *parent = 0, QWidget *partner = 0,  const QString &file = 0, const TipPosition &drawOn = tpBelow );
     virtual ~MibitTip();
 
     /**
@@ -65,8 +66,10 @@ class MibitTip : public QSvgWidget
       * Its partner is the widget where the tip frame will be shown on.
       *
       */
-    void showTip( const QString &msg);
-    void setSVG(const QString &file);
+    void showTip( const QString &msg );
+    void setSVG( const QString &file );
+    void setMaxHeight(int h) { maxHeight = h; };
+    void setMaxWidth(int w) { maxWidth = w; };
 
   private:
     QWidget *m_parent;
@@ -75,6 +78,10 @@ class MibitTip : public QSvgWidget
     QLabel *text;
     QVBoxLayout *layout;
     QLabel *img;
+    TipPosition m_tipPosition;
+    int maxHeight;
+    int maxWidth;
+    QString fileName;
 
   private slots:
     void morph(int newSize);

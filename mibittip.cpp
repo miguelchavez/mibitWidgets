@@ -26,20 +26,27 @@
 #include <QSize>
 #include <QRect>
 #include <QLabel>
+//#include <QGraphicsSvgItem
 
-
-MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file )
+MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, const TipPosition &drawOn  )
     : QSvgWidget( parent )
 {
-    if (file != 0 )
+    if (file != 0 ) {
         setSVG(file);
+        fileName = file;
+    } else fileName = "";
 
-    setMaximumHeight(MAX_SIZE);
+    //set temporal max h & w
+    maxWidth = 200;
+    maxHeight= 200;
+    setMaximumHeight(maxHeight);
     setMinimumHeight(0);
     setFixedHeight(0);
     //save parent and partner pointers
     m_parent = parent;
     m_partner= partner;
+    m_tipPosition = drawOn;
+
 
 
     //create labels
@@ -49,16 +56,23 @@ MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file )
     img->setPixmap(QPixmap("important.png")); //get emblem-important icon...
     img->setMaximumHeight(32);
     img->setAlignment(Qt::AlignCenter);
-    layout->addWidget(img);
-    layout->addWidget(text);
+    if ( m_tipPosition == tpAbove ) {
+        layout->addWidget(text);
+        layout->addWidget(img);
+        // a hack...
+        load("rotated_"+fileName);
+    } else {
+        layout->addWidget(img);
+        layout->addWidget(text);
+    }
+
     layout->setMargin(4);
     setLayout(layout);
     text->setWordWrap(true);
     text->setMargin(5);
-    ///TODO: insert the emblem-important icon.
 
     timeLine = new QTimeLine(1000, this);
-    timeLine->setFrameRange(0, MAX_SIZE);
+    timeLine->setFrameRange(0, maxHeight);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(morph(int)));
 }
 
@@ -66,25 +80,10 @@ MibitTip::~MibitTip ()
 {
 }
 
-void MibitTip::showTip( const QString &msg )
+void MibitTip::showTip( const QString &msg)
 {
-    //get sizes
-    QRect partnerGeom = m_partner->geometry();
-
-    //calculate tip  position.
-    int pw = partnerGeom.width();
-    int ph = partnerGeom.height();
-    int x  = partnerGeom.x() + 10;
-    int y  = ph + partnerGeom.y() - 4; // the 4 is hardcoded, it must be the margin for the proper layout
-    int tipWidth = pw - 20;
-
-    //if ( tipWidth > MAX_W ) tipWidth = MAX_W; // really do this?
-
-    setGeometry(x,y,tipWidth, height() );
-
     text->setText( msg );
     show();
-
     //make it grow
     timeLine->setDirection(QTimeLine::Forward);
     timeLine->start();
@@ -94,12 +93,39 @@ void MibitTip::showTip( const QString &msg )
 
 void MibitTip::morph(int newSize)
 {
-    //now it also resizes if partner is resized (window resized).
-    setGeometry(QRect(m_partner->geometry().x()+10,
-                      m_partner->geometry().y()+m_partner->height()-4,
-                      m_partner->width()-20,
-                      newSize));
-    setFixedHeight(newSize);
+    //get some positions...
+    QRect listRect(m_partner->rect());
+    QPoint below = m_partner->mapToGlobal(listRect.bottomLeft());
+    QPoint above = m_partner->mapToGlobal(listRect.topLeft());
+    QPoint windowPos = m_parent->mapToGlobal(QPoint(0,0)); //the window is the parent, we assume this.
+
+    //correct global positions with current window position.
+    below = below - windowPos;
+    above = above -windowPos;
+
+    //where to draw above or below its partner
+    if ( m_tipPosition == tpBelow ) { //here will grow from top to bottom
+        listRect.setX(below.x()+10);
+        listRect.setY(below.y()-3);
+        setGeometry(listRect);
+        //set fixed width and height
+        setFixedHeight(newSize);
+    } else {                        // here will grow from bottom to top and the image inverted
+        //load the inverted background image
+        //QGraphicsSvgItem svgItem(fileName);
+        //svgItem.rotate(180);
+        //QSvgRenderer *theRenderer = renderer();
+        /// How to pass the rotated svg item to the renderer or QSvgWidget loader?
+
+        int newY = above.y()-newSize;
+        listRect.setX(above.x()+10);
+        listRect.setY(newY);
+        setGeometry(listRect);
+        setFixedHeight(newSize);
+    }
+
+
+    setFixedWidth(m_partner->width()-20);
 }
 
 void MibitTip::autoHide()
