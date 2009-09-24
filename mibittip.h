@@ -74,8 +74,8 @@ class MibitTip : public QSvgWidget
     void showTip( const QString &msg );
     void setSVG( const QString &file );
     void setIcon(const QPixmap &icon );
-    void setMaxHeight(int h) { maxHeight = h; };
-    void setMaxWidth(int w) { maxWidth = w; };
+    void setMaxHeight(int h) { maxHeight = h; }
+    void setMaxWidth(int w) { maxWidth = w; }
 
   private:
     QWidget *m_parent;
@@ -88,6 +88,10 @@ class MibitTip : public QSvgWidget
     int maxHeight;
     int maxWidth;
     QString fileName;
+    bool closedByUser;
+
+  protected:
+    void mousePressEvent ( QMouseEvent * event );
 
   private slots:
     void morph(int newSize);

@@ -48,7 +48,7 @@ MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, cons
     m_parent = parent;
     m_partner= partner;
     m_tipPosition = drawOn;
-
+    closedByUser = false;
 
 
     //create labels
@@ -129,8 +129,10 @@ void MibitTip::morph(int newSize)
 
 void MibitTip::autoHide()
 {
-    timeLine->toggleDirection();//reverse!
-    timeLine->start();
+    if ( !closedByUser ) {
+        timeLine->toggleDirection();//reverse!
+        timeLine->start();
+    } else closedByUser = !closedByUser;
 }
 
 void MibitTip::setSVG(const QString &file)
@@ -144,4 +146,8 @@ void MibitTip::setIcon(const QPixmap &icon)
  }
 
 
-
+void MibitTip::mousePressEvent ( QMouseEvent * )
+{
+    autoHide(); //we simply want to close the tip on any mouse click
+    closedByUser = true;
+}
