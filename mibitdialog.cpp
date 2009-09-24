@@ -67,7 +67,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     vLayout->addLayout(hLayout,0);
     vLayout->addWidget(btnClose,0,Qt::AlignCenter);
 
-    timeLine = new QTimeLine(animRate, this); //1 second animation, check later.
+    timeLine = new QTimeLine(animRate, this);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
     connect(btnClose,SIGNAL(clicked()),this, SLOT(hideDialog()));
     connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
@@ -86,23 +86,32 @@ void MibitDialog::showDialog(const QString &msg, AnimationType animation )
 
     show();
     //update steps for animation, now that the window is showing.
-    int maxStep; int minStep = 0;
-    if ( animType == atSlideDown ) {
-        maxStep = (m_parent->geometry().height()/2)-(maxHeight/2);
-        minStep = -maxHeight;
-        //timeLine->setCurveShape(QTimeLine::EaseOutCurve); //QTimeLine::SineCurve: Hacerlo criticamente amortiguado
-    } else if (animType == atSlideUp ) {
-        maxStep = (m_parent->geometry().height()/2)-(maxHeight/2);
-        minStep = maxHeight + m_parent->geometry().height();
-    }
-    else if ( animType == atGrowCenterH ) maxStep = maxWidth;
-    else maxStep=maxHeight;
 
+    int maxStep; int minStep = 0;
+    switch (animType) {
+        case atSlideDown:
+            maxStep = (m_parent->geometry().height()/2)-(maxHeight/2);
+            minStep = -maxHeight;
+            break;
+        case atSlideUp:
+            maxStep = (m_parent->geometry().height()/2)-(maxHeight/2);
+            minStep = maxHeight + m_parent->geometry().height();
+            break;
+        case atGrowCenterH:
+            maxStep = maxWidth;
+            minStep = 0;
+            break;
+        case atGrowCenterV:
+            maxStep= maxHeight;
+            minStep = 0;
+            break;
+    }
+
+    //timeLine->setCurveShape(QTimeLine::EaseOutCurve); //QTimeLine::SineCurve: Hacerlo criticamente amortiguado
     timeLine->setFrameRange(minStep,maxStep);
     //make it grow
     timeLine->setDirection(QTimeLine::Forward);
     timeLine->start();
-
     btnClose->setFocus();
 }
 
@@ -117,17 +126,36 @@ void MibitDialog::animate(int step)
     int midPointY = (windowGeom.height()/2);
     int newY;
     int newX;
-    if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - maxWidth/2;
-    if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - maxHeight/2;
+    //if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - maxWidth/2;
+    //if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - maxHeight/2;
 
     QRect dRect;
     switch (animType) {
         case atGrowCenterV:   // Grow from Center Vertically.. to up and down
+            if ((midPointY - step/2) < 0 ) newY = 0; else newY = midPointY - step/2;
+            if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - maxWidth/2;
+            dRect.setX(newX);
+            dRect.setY(newY);
+            dRect.setWidth(step);
+            dRect.setHeight(maxHeight);
+            setGeometry(dRect);
+            setFixedHeight(step);
+            setFixedWidth(maxWidth);
             break;
         case atGrowCenterH:   // Grow from Center Horizontally... from left to right
+            if ((midPointX - step/2) < 0 ) newX = 0; else newX = midPointX - step/2;
+            if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - maxHeight/2;
+            dRect.setX(newX);
+            dRect.setY(newY);
+            dRect.setWidth(maxWidth);
+            dRect.setHeight(step);
+            setGeometry(dRect);
+            setFixedHeight(maxHeight);
+            setFixedWidth(step);
             break;
         case atSlideDown:  // slide Up
         case atSlideUp:    // Slide down
+            if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - maxWidth/2;
             dRect.setX(newX);
             dRect.setY(step);
             dRect.setWidth(maxWidth);
@@ -152,7 +180,6 @@ void MibitDialog::onAnimationFinished()
 {
     if (timeLine->direction() == QTimeLine::Backward) {
         close();
-        //qDebug()<<"Animation finished and it was in backward direction";
     }
 }
 
