@@ -82,7 +82,6 @@ private:
     int animRate;
     bool par;
     unsigned int parTimes;
-    unsigned int parShots;
 
 private slots:
     void animate(const int &step);

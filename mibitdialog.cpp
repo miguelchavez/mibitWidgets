@@ -42,7 +42,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     setMaxHeight(maxH); //default sizes
     setMaxWidth(maxW);
     animRate = 500; //default animation speed (half second rate).
-    par = false; parTimes = 0; parShots = 0;
+    par = false; parTimes = 0;
 
 
     img      = new QLabel();
@@ -219,17 +219,25 @@ void MibitDialog::shakeIt()
 {
 
     if (par) {
-        if (parTimes < 10)
-          setGeometry(geometry().x()+3, geometry().y()+1, geometry().width(), geometry().height());
+        if (parTimes < 5) {
+            if ( parTimes % 2 == 0 )
+                setGeometry(geometry().x()-3, geometry().y()+3, geometry().width(), geometry().height());
+            else
+                setGeometry(geometry().x()+3, geometry().y()+3, geometry().width(), geometry().height());
+        }
         parTimes++;
         if (parTimes >39) {
-            parShots++;
+            //parShots++;
             parTimes = 0;
         }
     }
     else {
-        if (parTimes < 10)
-          setGeometry(geometry().x()-3, geometry().y()-1, geometry().width(), geometry().height());
+        if (parTimes < 5) {
+            if ( parTimes % 2 == 0 )
+                setGeometry(geometry().x()+3, geometry().y()-3, geometry().width(), geometry().height());
+            else
+                setGeometry(geometry().x()-3, geometry().y()-3, geometry().width(), geometry().height());
+        }
     }
 
     par = !par;
