@@ -18,7 +18,7 @@ mainView::mainView(QWidget *parent)
     tip3 = new MibitTip(this, ui->btnTest3, "tip.svg", QPixmap("important.png"), tpAbove );
 
     dialog1 = new MibitDialog(this,"Welcome to mibitWidgets Demo!","dialog-theme.svg",QPixmap("face-smile.png"), atSlideDown );
-    dialog1->setSize(200,100);
+    dialog1->setSize(300,150);
 
     connect(ui->btnTest1, SIGNAL(clicked()), SLOT(showTip1()));
     connect(ui->btnTest2, SIGNAL(clicked()), SLOT(showTip2()));
@@ -72,17 +72,18 @@ void mainView::showDialog1()
 void mainView::showDialog2()
 {
     dialog1->setTextColor("Yellow"); //Ensure to pass a valid Qt-CSS color name.
-    dialog1->showDialog("Dialog with a slide Up animation!", atSlideUp);
+    dialog1->showDialog("<html>Dialog with a <b>slide Up</b> animation. Also you can <b><i>shake it</i></b> to take more attention.</html>", atSlideUp);
+    QTimer::singleShot(3000,dialog1,SLOT(shake()));
 }
 
 void mainView::showDialog3()
 {
       dialog1->setTextColor("Gray");//Ensure to pass a valid Qt-CSS color name.
-    dialog1->showDialog("Dialog with a Grow Vertically Animation", atGrowCenterV);
+    dialog1->showDialog("Dialog with a Grow Vertically Animation. You can Change the message color with the setTextColor() method.", atGrowCenterV);
 }
 
 void mainView::showDialog4()
 {
       dialog1->setTextColor("Orange");//Ensure to pass a valid Qt-CSS color name.
-    dialog1->showDialog("Dialog with a Grow Horizontally Animation", atGrowCenterH);
+    dialog1->showDialog("Dialog with a Grow Horizontally Animation.", atGrowCenterH);
 }

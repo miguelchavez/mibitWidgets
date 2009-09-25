@@ -49,14 +49,19 @@ public:
     void setSVG(const QString &file);
     void setIcon(const QPixmap &icon);
     void setMessage(const QString &msg);
-    void setAnimationType(AnimationType atype) { animType = atype; }
-    void setAnimationRate(int r) { animRate = r; }
-    void setMaxHeight(int m)   { setMaximumHeight(m); maxHeight = m; }
-    void setMaxWidth(int m)    { setMaximumWidth(m); maxWidth = m;   }
-    void setSize(int w, int h) { setMaxWidth(w); setMaxHeight(h);    }
+    void setTextColor(const QString &color);
+
+    void setAnimationType(const AnimationType &atype) { animType = atype; }
+    void setAnimationRate(const int &r) { animRate = r; }
+    void setMaxHeight(const int &m)   { setMaximumHeight(m); maxHeight = m; }
+    void setMaxWidth(const int &m)    { setMaximumWidth(m); maxWidth = m;   }
+    void setSize(const int &w, const int &h) { setMaxWidth(w); setMaxHeight(h);    }
 private:
     QTimeLine *timeLine;
+    QTimer *shakeTimer;
     QLabel *text;
+    QLabel *title;
+    QLabel *btn; //we will paint the close icon.
     QHBoxLayout *hLayout;
     QVBoxLayout *vLayout;
     QLabel *img;
@@ -66,11 +71,18 @@ private:
     int maxWidth;
     int maxHeight;
     int animRate;
+    bool par;
+    unsigned int parTimes;
+    unsigned int parShots;
 
 private slots:
-    void animate(int step);
+    void animate(const int &step);
+    void shakeIt();
     void hideDialog();
     void onAnimationFinished();
+public slots:
+    void shake();
+
 };
 
 #endif // MIBITDIALOG_H

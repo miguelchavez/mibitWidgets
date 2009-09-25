@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTimeLine>
+#include <QTimer>
 #include <QPushButton>
 #include <QDebug>
 
@@ -36,11 +37,12 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
 
     m_parent = parent;
     animType = animation;
-    setMinimumHeight(150);
+    setMinimumHeight(100);
     setFixedSize(0,0); //until show we grow it
     setMaxHeight(maxH); //default sizes
     setMaxWidth(maxW);
     animRate = 500; //default animation speed (half second rate).
+    par = false; parTimes = 0; parShots = 0;
 
 
     img      = new QLabel();
@@ -48,29 +50,34 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     vLayout  = new QVBoxLayout();
     text     = new QLabel(msg);
     btnClose = new QPushButton("Close"); ///TODO: what about translations???
+    shakeTimer = new QTimer(this);
+    shakeTimer->setInterval(20);
 
 
     img->setPixmap(icon);
-    img->setMaximumHeight(48); //the icon size is hardcoded now.
-    img->setMaximumWidth(48);
+    img->setMaximumHeight(54); //the icon size is hardcoded now.
+    img->setMaximumWidth(54);
     img->setAlignment(Qt::AlignLeft);
+    img->setMargin(4);
 
     btnClose->setMaximumWidth(120);
     btnClose->setShortcut(Qt::Key_Escape);
 
     setLayout(vLayout);
     text->setWordWrap(true);
-    text->setMargin(5);
+    text->setAlignment(Qt::AlignJustify);
+    text->setMargin(10);
 
-    hLayout->addWidget(img,0,Qt::AlignLeft);
-    hLayout->addWidget(text,0,Qt::AlignLeft);
-    vLayout->addLayout(hLayout,0);
-    vLayout->addWidget(btnClose,0,Qt::AlignCenter);
+    hLayout->addWidget(img,0,Qt::AlignCenter);
+    hLayout->addWidget(text,1,Qt::AlignCenter);
+    vLayout->addLayout(hLayout,2);
+    vLayout->addWidget(btnClose,1,Qt::AlignCenter);
 
     timeLine = new QTimeLine(animRate, this);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
     connect(btnClose,SIGNAL(clicked()),this, SLOT(hideDialog()));
     connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
+    connect(shakeTimer,SIGNAL(timeout()), this, SLOT(shakeIt()));
 }
 
 MibitDialog::~MibitDialog()
@@ -84,6 +91,7 @@ void MibitDialog::showDialog(const QString &msg, AnimationType animation )
     if (msg.isEmpty()) setMessage(text->text()); else setMessage( msg );
     if (animation == 0) setAnimationType( atSlideDown ); else setAnimationType( animation );
 
+    setGeometry(-1000,-1000,0,0);
     show();
     //update steps for animation, now that the window is showing.
 
@@ -115,7 +123,7 @@ void MibitDialog::showDialog(const QString &msg, AnimationType animation )
     btnClose->setFocus();
 }
 
-void MibitDialog::animate(int step)
+void MibitDialog::animate(const int &step)
 {
     //get some sizes...
     int textW = text->width();
@@ -126,12 +134,10 @@ void MibitDialog::animate(int step)
     int midPointY = (windowGeom.height()/2);
     int newY;
     int newX;
-    //if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - maxWidth/2;
-    //if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - maxHeight/2;
 
     QRect dRect;
     switch (animType) {
-        case atGrowCenterV:   // Grow from Center Vertically.. to up and down
+        case atGrowCenterV:   // Grow from Center Vertically..
             if ((midPointY - step/2) < 0 ) newY = 0; else newY = midPointY - step/2;
             if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - maxWidth/2;
             dRect.setX(newX);
@@ -142,7 +148,7 @@ void MibitDialog::animate(int step)
             setFixedHeight(step);
             setFixedWidth(maxWidth);
             break;
-        case atGrowCenterH:   // Grow from Center Horizontally... from left to right
+        case atGrowCenterH:   // Grow from Center Horizontally...
             if ((midPointX - step/2) < 0 ) newX = 0; else newX = midPointX - step/2;
             if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - maxHeight/2;
             dRect.setX(newX);
@@ -161,7 +167,6 @@ void MibitDialog::animate(int step)
             dRect.setWidth(maxWidth);
             dRect.setHeight(maxHeight);
             setGeometry(dRect);
-
             setFixedHeight(maxHeight);
             setFixedWidth(maxWidth);
             break;
@@ -180,6 +185,7 @@ void MibitDialog::onAnimationFinished()
 {
     if (timeLine->direction() == QTimeLine::Backward) {
         close();
+        shakeTimer->stop();
     }
 }
 
@@ -198,3 +204,34 @@ void MibitDialog::setMessage(const QString &msg)
 {
     text->setText(msg);
 }
+
+void MibitDialog::setTextColor(const QString &color)
+{
+    text->setStyleSheet(QString("color:%1").arg(color));
+}
+
+void MibitDialog::shake()
+{
+    shakeTimer->start();
+}
+
+void MibitDialog::shakeIt()
+{
+
+    if (par) {
+        if (parTimes < 10)
+          setGeometry(geometry().x()+3, geometry().y()+1, geometry().width(), geometry().height());
+        parTimes++;
+        if (parTimes >39) {
+            parShots++;
+            parTimes = 0;
+        }
+    }
+    else {
+        if (parTimes < 10)
+          setGeometry(geometry().x()-3, geometry().y()-1, geometry().width(), geometry().height());
+    }
+
+    par = !par;
+}
+
