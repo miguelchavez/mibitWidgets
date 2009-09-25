@@ -6,6 +6,7 @@
 
 #include <QDebug>
 #include <QTimer>
+#include <QDesktopWidget>
 
 mainView::mainView(QWidget *parent)
     : QWidget(parent), ui(new Ui::mainView)
@@ -29,7 +30,8 @@ mainView::mainView(QWidget *parent)
     connect(ui->btnDialog3, SIGNAL(clicked()), SLOT(showDialog3()));
     connect(ui->btnDialog4, SIGNAL(clicked()), SLOT(showDialog4()));
 
-    QTimer::singleShot(500,this,SLOT(showDialog1()));
+    QTimer::singleShot(700,this,SLOT(showDialog1()));
+    QTimer::singleShot(0,this,SLOT(centerWindow()));
 
 }
 
@@ -37,6 +39,14 @@ mainView::~mainView()
 {
     delete ui;
 }
+
+void mainView::centerWindow()
+{
+    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->screenNumber(this));
+    setGeometry( (screenRect.width()/2) - geometry().width()/2,
+                 (screenRect.height()/2) - geometry().height()/2,
+                 geometry().width(),geometry().height());
+ }
 
 void mainView::showTip1()
 {
@@ -55,20 +65,24 @@ void mainView::showTip3()
 
 void mainView::showDialog1()
 {
+    dialog1->setTextColor("White");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a slide Down Animation", atSlideDown);
 }
 
 void mainView::showDialog2()
 {
+    dialog1->setTextColor("Yellow"); //Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a slide Up animation!", atSlideUp);
 }
 
 void mainView::showDialog3()
 {
+      dialog1->setTextColor("Gray");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Vertically Animation", atGrowCenterV);
 }
 
 void mainView::showDialog4()
 {
+      dialog1->setTextColor("Orange");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Horizontally Animation", atGrowCenterH);
 }

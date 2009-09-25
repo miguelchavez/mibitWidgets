@@ -25,6 +25,7 @@ private:
     MibitTip *tip3;
     MibitDialog *dialog1;
 private slots:
+    void centerWindow();
     void showTip1();
     void showTip2();
     void showTip3();
