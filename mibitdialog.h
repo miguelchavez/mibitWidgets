@@ -33,6 +33,15 @@ class QPushButton;
 /**
   * This class is used to display animated dialogs appering on screen's
   * top or middle. Are svg themed and borderless.
+  * It can also be shaken to take user's attention.
+  *
+  * The animation types are four:
+  *   atGrowCenterV: This makes the dialog appear growing from the center in the Y axe.
+  *   atGrowCenterH: This makes the dialog appear growing from the center in the X axe.
+  *   atSlideDown:   This makes the dialog appear sliding down from the top of its parent.
+  *   atSlideUp:     This makes the dialog appear sliding up from the bottom of its parent.
+  *
+  *
   */
 
 enum AnimationType { atGrowCenterV=1, atGrowCenterH=2, atSlideDown=3, atSlideUp=4 };
