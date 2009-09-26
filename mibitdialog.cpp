@@ -66,7 +66,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
 
     setLayout(vLayout);
     text->setWordWrap(true);
-    text->setAlignment(Qt::AlignJustify);
+    text->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
     text->setMargin(10);
 
     hLayout->addWidget(img,0,Qt::AlignCenter);
