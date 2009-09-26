@@ -39,6 +39,7 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     m_parent = parent;
     m_onTop = onTop;
     closedByUser = false;
+    m_fileName = file;
     setMinimumHeight(100);
     setFixedSize(0,0); //until show we grow it
     setMaxHeight(max_H); //default sizes
@@ -82,6 +83,8 @@ void MibitNotifier::showNotification( const QString &msg, const int &timeToLive)
     //set default msg if the sent is empty.
     if (msg.isEmpty()) setMessage(message->text()); else setMessage( msg );
 
+    if (!m_onTop) setSVG("rotated_"+m_fileName); else setSVG(m_fileName);
+
     setGeometry(-1000,-1000,0,0);
     show();
     //update steps for animation, now that the window is showing.
@@ -92,10 +95,9 @@ void MibitNotifier::showNotification( const QString &msg, const int &timeToLive)
         maxStep = maxHeight;
         minStep = 0;
     } else {
-        maxStep = maxHeight;
-        minStep = m_parent->geometry().height() + maxHeight;
+        maxStep = m_parent->geometry().height()-maxHeight;
+        minStep = m_parent->geometry().height();
     }
-    qDebug()<<"maxStep:"<<maxStep<<" minStep:"<<minStep;
 
     timeLine->setFrameRange(minStep,maxStep);
     //make it grow
@@ -114,20 +116,25 @@ void MibitNotifier::animate(const int &step)
     int newX;
     QRect dRect;
     int pwidth = m_parent->geometry().width();
-
-    qDebug()<<" STEP = "<<step;
+    int pheight = m_parent->geometry().height();
+    if ((midPointX-(pwidth/2)) < 0) newX = 0; else newX = midPointX - (pwidth/2);
 
     if (m_onTop) { // Sliding from top
-        if ((midPointX-(pwidth/2)) < 0) newX = 0; else newX = midPointX - (pwidth/2);
-            dRect.setX(newX+10);
-            dRect.setY(0);
-            dRect.setWidth(pwidth-20);
-            dRect.setHeight(maxHeight);
-            setGeometry(dRect);
-            setFixedHeight(step);
-            setFixedWidth(pwidth-20);
+        dRect.setX(newX+10);
+        dRect.setY(0);
+        dRect.setWidth(pwidth-20);
+        dRect.setHeight(maxHeight);
+        setGeometry(dRect);
+        setFixedHeight(step);
+        setFixedWidth(pwidth-20);
     } else {       // Sliding from bottom
-        qDebug()<<"not implemented yet";
+        dRect.setX(newX+10);
+        dRect.setY(step);
+        dRect.setWidth(pwidth-20);
+        dRect.setHeight(maxHeight);
+        setGeometry(dRect);
+        setFixedHeight(pheight-step);
+        setFixedWidth(pwidth-20);
     }
 }
 
@@ -150,6 +157,11 @@ void MibitNotifier::onAnimationFinished()
     if (timeLine->direction() == QTimeLine::Backward) {
         close();
     }
+}
+
+void MibitNotifier::setOnBottom(const bool &sOnBottom)
+{
+    m_onTop = !sOnBottom;
 }
 
 

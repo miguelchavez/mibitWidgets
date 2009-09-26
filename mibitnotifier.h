@@ -44,6 +44,7 @@ public:
     MibitNotifier(QWidget *parent = 0, const QString &file = 0, const QPixmap &icon = 0, const QPixmap &closeIcon =0, const bool &onTop= true);
     ~MibitNotifier();
     void showNotification( const QString &msg = 0, const int &timeToLive = 0); //timeToLive = 0 : not auto hide it.
+    void setOnBottom(const bool &sOnBottom = true);
     void setSVG(const QString &file);
     void setIcon(const QPixmap &icon);
     void setMessage(const QString &msg);
@@ -56,6 +57,7 @@ private:
     QHBoxLayout *hLayout;
     QLabel *img;
     QWidget *m_parent;
+    QString m_fileName;
     bool m_onTop;
     bool closedByUser;
     int maxHeight;
