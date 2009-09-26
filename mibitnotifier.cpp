@@ -25,10 +25,12 @@
 #include <QString>
 #include <QLabel>
 #include <QPushButton>
+#include <QToolButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTimeLine>
 #include <QTimer>
+#include <QKeyEvent>
 #include <QDebug>
 
 MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap &icon, const QPixmap &closeIcon, const bool &onTop)
@@ -48,7 +50,7 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     img        = new QLabel();
     hLayout    = new QHBoxLayout();
     message    = new QLabel("");
-    btnClose   = new QPushButton(""); //only an image
+    btnClose   = new QToolButton(); //only an image
 
 
     img->setPixmap(icon);
@@ -61,16 +63,19 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     btnClose->setMaximumHeight(32); //the icon size is hardcoded now.
     btnClose->setMaximumWidth(32);
     btnClose->setToolTip("Close Notification"); //what about translations?
-    btnClose->setShortcut(Qt::Key_Escape);
+    btnClose->setFixedSize(32,32);
+    btnClose->setIconSize(QSize(32,32));
+    btnClose->setAutoFillBackground(false);
+    //btnClose->setFlat(true);
 
     setLayout(hLayout);
     message->setWordWrap(true);
-    message->setAlignment(Qt::AlignJustify);
+    message->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
     message->setMargin(10);
 
     hLayout->addWidget(img,0,Qt::AlignLeft);
     hLayout->addWidget(message,1,Qt::AlignLeft);
-    hLayout->addWidget(btnClose,1,Qt::AlignRight);
+    hLayout->addWidget(btnClose,0,Qt::AlignRight);
 
     timeLine  = new QTimeLine(animRate, this);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
@@ -183,6 +188,20 @@ void MibitNotifier::setMessage(const QString &msg)
 void MibitNotifier::setTextColor(const QString &color)
 {
     message->setStyleSheet(QString("color:%1").arg(color));
+}
+
+void MibitNotifier::mousePressEvent ( QMouseEvent * )
+{
+    hideOnUserRequest();
+}
+
+
+void MibitNotifier::keyPressEvent ( QKeyEvent * event )
+{
+    if ( event->key() == Qt::Key_Escape )
+    {
+        hideOnUserRequest();
+    } //else ignore event.
 }
 
 

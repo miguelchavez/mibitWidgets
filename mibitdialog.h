@@ -95,6 +95,8 @@ private slots:
 public slots:
     void shake();
     void wave();
+protected:
+    void keyPressEvent ( QKeyEvent * event );
 
 };
 

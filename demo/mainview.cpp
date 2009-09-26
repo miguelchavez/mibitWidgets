@@ -42,9 +42,6 @@ mainView::mainView(QWidget *parent)
     dialog1->setSize(300,150);
 
     notifier = new MibitNotifier(this,"notifier.svg",QPixmap("information.png"),QPixmap("close.png"));//onTop = true
-    // There is a problem with shortcut keys. When every MibitDialog & MibitNotifier object are created,
-    // the ESC key is assigned for the close button of each one.. as they are in the same container (parent) there is conflict,
-    // the later created is the one that got the shortcut correctly assigned.
 
     connect(ui->btnTest1, SIGNAL(clicked()), SLOT(showTip1()));
     connect(ui->btnTest2, SIGNAL(clicked()), SLOT(showTip2()));

@@ -28,6 +28,7 @@
 #include <QTimeLine>
 #include <QTimer>
 #include <QPushButton>
+#include <QKeyEvent>
 #include <QDebug>
 
 MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &file, const QPixmap &icon, AnimationType animation )
@@ -62,7 +63,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     img->setMargin(4);
 
     btnClose->setMaximumWidth(120);
-    btnClose->setShortcut(Qt::Key_Escape);
+    //btnClose->setShortcut(Qt::Key_Escape);
 
     setLayout(vLayout);
     text->setWordWrap(true);
@@ -258,4 +259,12 @@ void MibitDialog::waveIt(const int &step)
     if (timeLine->state() == QTimeLine::NotRunning || !shakeTimer->isActive() ) {
     setGeometry(geometry().x(),step, geometry().width(), geometry().height());
     } else qDebug()<<"Dialog is in active animation.";
+}
+
+void MibitDialog::keyPressEvent ( QKeyEvent * event )
+{
+    if ( event->key() == Qt::Key_Escape )
+    {
+        hideDialog();
+    } //else ignore event.
 }

@@ -27,7 +27,7 @@ class QString;
 class QHBoxLayout;
 class QLabel;
 class QPixmap;
-class QPushButton;
+class QToolButton;
 
 /**
   * This class is used to display animated notifications appering on parent
@@ -53,7 +53,7 @@ public:
 private:
     QTimeLine *timeLine;
     QLabel *message;
-    QPushButton *btnClose;
+    QToolButton *btnClose;
     QHBoxLayout *hLayout;
     QLabel *img;
     QWidget *m_parent;
@@ -67,6 +67,9 @@ private slots:
     void hideDialog();
     void hideOnUserRequest();
     void onAnimationFinished();
+protected:
+    void mousePressEvent ( QMouseEvent * event );
+    void keyPressEvent ( QKeyEvent * event );
 };
 
 #endif // MIBITNOTIFIER_H
