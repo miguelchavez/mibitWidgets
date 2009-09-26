@@ -73,8 +73,12 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     vLayout->addLayout(hLayout,2);
     vLayout->addWidget(btnClose,1,Qt::AlignCenter);
 
-    timeLine = new QTimeLine(animRate, this);
+    timeLine  = new QTimeLine(animRate, this);
+    wTimeLine = new QTimeLine(2000, this);
+    wTimeLine->setFrameRange(80,180);
+    wTimeLine->setCurveShape(QTimeLine::CosineCurve);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
+    connect(wTimeLine, SIGNAL(frameChanged(int)), this, SLOT(waveIt(int)));
     connect(btnClose,SIGNAL(clicked()),this, SLOT(hideDialog()));
     connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
     connect(shakeTimer,SIGNAL(timeout()), this, SLOT(shakeIt()));
@@ -227,7 +231,6 @@ void MibitDialog::shakeIt()
         }
         parTimes++;
         if (parTimes >39) {
-            //parShots++;
             parTimes = 0;
         }
     }
@@ -243,3 +246,15 @@ void MibitDialog::shakeIt()
     par = !par;
 }
 
+
+void MibitDialog::wave()
+{
+    wTimeLine->start();
+}
+
+void MibitDialog::waveIt(const int &step)
+{
+    if (timeLine->state() == QTimeLine::NotRunning || !shakeTimer->isActive() ) {
+    setGeometry(geometry().x(),step, geometry().width(), geometry().height());
+    } else qDebug()<<"Dialog is in active animation.";
+}

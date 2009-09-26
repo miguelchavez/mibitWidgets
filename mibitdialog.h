@@ -33,7 +33,7 @@ class QPushButton;
 /**
   * This class is used to display animated dialogs appering on screen's
   * top or middle. Are svg themed and borderless.
-  * It can also be shaken to take user's attention.
+  * It can also be shaken or wavy to take user's attention.
   *
   * The animation types are four:
   *   atGrowCenterV: This makes the dialog appear growing from the center in the Y axe.
@@ -67,6 +67,7 @@ public:
     void setSize(const int &w, const int &h) { setMaxWidth(w); setMaxHeight(h);    }
 private:
     QTimeLine *timeLine;
+    QTimeLine *wTimeLine;
     QTimer *shakeTimer;
     QLabel *text;
     QLabel *title;
@@ -86,10 +87,12 @@ private:
 private slots:
     void animate(const int &step);
     void shakeIt();
+    void waveIt(const int &step);
     void hideDialog();
     void onAnimationFinished();
 public slots:
     void shake();
+    void wave();
 
 };
 

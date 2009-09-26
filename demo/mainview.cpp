@@ -93,13 +93,14 @@ void mainView::showDialog2()
 {
     dialog1->setTextColor("Yellow"); //Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("<html>Dialog with a <b>slide Up</b> animation. Also you can <b><i>shake it</i></b> to take more attention.</html>", atSlideUp);
-    QTimer::singleShot(3000,dialog1,SLOT(shake()));
+    QTimer::singleShot(2000,dialog1,SLOT(shake()));
 }
 
 void mainView::showDialog3()
 {
-      dialog1->setTextColor("Gray");//Ensure to pass a valid Qt-CSS color name.
+    dialog1->setTextColor("Gray");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Vertically Animation. You can Change the message color with the setTextColor() method.", atGrowCenterV);
+    QTimer::singleShot(3000,dialog1,SLOT(wave()));
 }
 
 void mainView::showDialog4()
