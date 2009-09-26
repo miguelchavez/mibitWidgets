@@ -75,7 +75,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
 
     timeLine  = new QTimeLine(animRate, this);
     wTimeLine = new QTimeLine(2000, this);
-    wTimeLine->setFrameRange(80,180);
+    wTimeLine->setFrameRange(90,190);
     wTimeLine->setCurveShape(QTimeLine::CosineCurve);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
     connect(wTimeLine, SIGNAL(frameChanged(int)), this, SLOT(waveIt(int)));
