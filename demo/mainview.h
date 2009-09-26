@@ -23,6 +23,7 @@
 #include <QtGui/QWidget>
 class MibitTip;
 class MibitDialog;
+class MibitNotifier;
 
 namespace Ui
 {
@@ -43,6 +44,7 @@ private:
     MibitTip *tip2;
     MibitTip *tip3;
     MibitDialog *dialog1;
+    MibitNotifier *notifier;
 private slots:
     void centerWindow();
     void showTip1();
@@ -52,6 +54,7 @@ private slots:
     void showDialog2();
     void showDialog3();
     void showDialog4();
+    void showNotify();
 };
 
 #endif // MAINVIEW_H

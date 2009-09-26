@@ -23,6 +23,7 @@
 
 #include "../mibittip.h"
 #include "../mibitdialog.h"
+#include "../mibitnotifier.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -40,6 +41,11 @@ mainView::mainView(QWidget *parent)
     dialog1 = new MibitDialog(this,"Welcome to mibitWidgets Demo!","dialog-theme.svg",QPixmap("face-smile.png"), atSlideDown );
     dialog1->setSize(300,150);
 
+    notifier = new MibitNotifier(this,"notifier.svg",QPixmap("information.png"),QPixmap("close.png"));//onTop = true
+    // There is a problem with shortcut keys. When every MibitDialog & MibitNotifier object are created,
+    // the ESC key is assigned for the close button of each one.. as they are in the same container (parent) there is conflict,
+    // the later created is the one that got the shortcut correctly assigned.
+
     connect(ui->btnTest1, SIGNAL(clicked()), SLOT(showTip1()));
     connect(ui->btnTest2, SIGNAL(clicked()), SLOT(showTip2()));
     connect(ui->btnTest3, SIGNAL(clicked()), SLOT(showTip3()));
@@ -49,6 +55,8 @@ mainView::mainView(QWidget *parent)
     connect(ui->btnDialog2, SIGNAL(clicked()), SLOT(showDialog2()));
     connect(ui->btnDialog3, SIGNAL(clicked()), SLOT(showDialog3()));
     connect(ui->btnDialog4, SIGNAL(clicked()), SLOT(showDialog4()));
+
+    connect(ui->btnNotify, SIGNAL(clicked()), this, SLOT(showNotify()) );
 
     QTimer::singleShot(700,this,SLOT(showDialog1()));
     QTimer::singleShot(0,this,SLOT(centerWindow()));
@@ -107,4 +115,10 @@ void mainView::showDialog4()
 {
       dialog1->setTextColor("Orange");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Horizontally Animation.", atGrowCenterH);
+}
+
+void mainView::showNotify()
+{
+    notifier->setMaxHeight(100);
+    notifier->showNotification("This is an animated notification, sliding down the window",5000);
 }

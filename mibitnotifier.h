@@ -18,82 +18,53 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef MIBITDIALOG_H
-#define MIBITDIALOG_H
+#ifndef MIBITNOTIFIER_H
+#define MIBITNOTIFIER_H
 
 #include <QSvgWidget>
 class QTimeLine;
 class QString;
 class QHBoxLayout;
-class QVBoxLayout;
 class QLabel;
 class QPixmap;
 class QPushButton;
 
 /**
-  * This class is used to display animated dialogs appering on screen's
-  * top or middle. Are svg themed and borderless.
-  * It can also be shaken or wavy to take user's attention.
-  *
-  * The animation types are four:
-  *   atGrowCenterV: This makes the dialog appear growing from the center in the Y axe.
-  *   atGrowCenterH: This makes the dialog appear growing from the center in the X axe.
-  *   atSlideDown:   This makes the dialog appear sliding down from the top of its parent.
-  *   atSlideUp:     This makes the dialog appear sliding up from the bottom of its parent.
-  *
+  * This class is used to display animated notifications appering on parent
+  * top or bottom. Are svg themed and borderless.
   *
   */
 
-enum AnimationType { atGrowCenterV=1, atGrowCenterH=2, atSlideDown=3, atSlideUp=4 };
-enum Sizes         { maxH=300, maxW=400 };
+enum sizes { max_H=300 };
 
-class MibitDialog : public QSvgWidget
+class MibitNotifier : public QSvgWidget
 {
 Q_OBJECT
 public:
-    MibitDialog(QWidget *parent = 0, const QString &msg = 0, const QString &file = 0, const QPixmap &icon = 0, AnimationType animation = atSlideDown );
-    ~MibitDialog();
-    void showDialog( const QString &msg = 0, AnimationType animation = atSlideDown );
-    // Tratar de hacer un metodo similar al QDialog::getDouble()... con static
+    MibitNotifier(QWidget *parent = 0, const QString &file = 0, const QPixmap &icon = 0, const QPixmap &closeIcon =0, const bool &onTop= true);
+    ~MibitNotifier();
+    void showNotification( const QString &msg = 0, const int &timeToLive = 0); //timeToLive = 0 : not auto hide it.
     void setSVG(const QString &file);
     void setIcon(const QPixmap &icon);
     void setMessage(const QString &msg);
     void setTextColor(const QString &color);
-
-    void setAnimationType(const AnimationType &atype) { animType = atype; }
-    void setAnimationRate(const int &r) { animRate = r; }
     void setMaxHeight(const int &m)   { setMaximumHeight(m); maxHeight = m; }
-    void setMaxWidth(const int &m)    { setMaximumWidth(m); maxWidth = m;   }
-    void setSize(const int &w, const int &h) { setMaxWidth(w); setMaxHeight(h);    }
 private:
     QTimeLine *timeLine;
-    QTimeLine *wTimeLine;
-    QTimer *shakeTimer;
-    QLabel *text;
-    QLabel *title;
-    //QLabel *btn; //we will paint the close icon.
-    QHBoxLayout *hLayout;
-    QVBoxLayout *vLayout;
-    QLabel *img;
+    QLabel *message;
     QPushButton *btnClose;
-    AnimationType animType;
+    QHBoxLayout *hLayout;
+    QLabel *img;
     QWidget *m_parent;
-    int maxWidth;
+    bool m_onTop;
+    bool closedByUser;
     int maxHeight;
     int animRate;
-    bool par;
-    unsigned int parTimes;
-
 private slots:
     void animate(const int &step);
-    void shakeIt();
-    void waveIt(const int &step);
     void hideDialog();
+    void hideOnUserRequest();
     void onAnimationFinished();
-public slots:
-    void shake();
-    void wave();
-
 };
 
-#endif // MIBITDIALOG_H
+#endif // MIBITNOTIFIER_H
