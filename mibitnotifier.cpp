@@ -24,8 +24,6 @@
 #include <QIcon>
 #include <QString>
 #include <QLabel>
-#include <QPushButton>
-#include <QToolButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTimeLine>
@@ -45,12 +43,13 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     setMinimumHeight(100);
     setFixedSize(0,0); //until show we grow it
     setMaxHeight(max_H); //default sizes
+    setMaxWidth(max_W);
     animRate = 500; //default animation speed (half second rate).
 
     img        = new QLabel();
     hLayout    = new QHBoxLayout();
     message    = new QLabel("");
-    btnClose   = new QToolButton(); //only an image
+    btnClose   = new QLabel(""); //only an image
 
 
     img->setPixmap(icon);
@@ -59,14 +58,11 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     img->setAlignment(Qt::AlignLeft);
     img->setMargin(4);
 
-    btnClose->setIcon(QPixmap(closeIcon));
-    btnClose->setMaximumHeight(32); //the icon size is hardcoded now.
-    btnClose->setMaximumWidth(32);
+    btnClose->setPixmap(closeIcon);
+    btnClose->setMaximumHeight(34); //the icon size is hardcoded now.
+    btnClose->setMaximumWidth(38);
     btnClose->setToolTip("Close Notification"); //what about translations?
-    btnClose->setFixedSize(32,32);
-    btnClose->setIconSize(QSize(32,32));
-    btnClose->setAutoFillBackground(false);
-    //btnClose->setFlat(true);
+    btnClose->setFixedSize(38,36);
 
     setLayout(hLayout);
     message->setWordWrap(true);
@@ -118,28 +114,26 @@ void MibitNotifier::animate(const int &step)
     //get some sizes...
     QRect windowGeom = m_parent->geometry();
     int midPointX = (windowGeom.width()/2);
-    int newX;
+    int newX; int newW;
     QRect dRect;
-    int pwidth = m_parent->geometry().width();
     int pheight = m_parent->geometry().height();
-    if ((midPointX-(pwidth/2)) < 0) newX = 0; else newX = midPointX - (pwidth/2);
+    if (maxWidth < min_W ) newW = min_W; else newW = maxWidth;
+    if ((midPointX-(newW/2)) < 0) newX = 0; else newX = midPointX - (newW/2);
+
+    dRect.setX(newX);
+    setFixedWidth(newW);
 
     if (m_onTop) { // Sliding from top
-        dRect.setX(newX+10);
         dRect.setY(0);
-        dRect.setWidth(pwidth-20);
-        dRect.setHeight(maxHeight);
         setGeometry(dRect);
         setFixedHeight(step);
-        setFixedWidth(pwidth-20);
     } else {       // Sliding from bottom
-        dRect.setX(newX+10);
+        int nh = pheight-step;
+        if ( nh < min_H ) nh = min_H;
         dRect.setY(step);
-        dRect.setWidth(pwidth-20);
-        dRect.setHeight(maxHeight);
         setGeometry(dRect);
-        setFixedHeight(pheight-step);
-        setFixedWidth(pwidth-20);
+        setFixedHeight(nh);
+
     }
 }
 

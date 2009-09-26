@@ -118,7 +118,7 @@ void mainView::showDialog4()
 
 void mainView::showNotify()
 {
-    notifier->setMaxHeight(100);
+    notifier->setSize(200,100);
     notifier->setOnBottom(false);
     notifier->showNotification("This is an animated notification, sliding down from top",5000);
 }

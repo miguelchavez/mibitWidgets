@@ -27,7 +27,6 @@ class QString;
 class QHBoxLayout;
 class QLabel;
 class QPixmap;
-class QToolButton;
 
 /**
   * This class is used to display animated notifications appering on parent
@@ -35,7 +34,7 @@ class QToolButton;
   *
   */
 
-enum sizes { max_H=300 };
+enum sizes { max_H=200, max_W=400, min_W=300, min_H=100 };
 
 class MibitNotifier : public QSvgWidget
 {
@@ -50,10 +49,12 @@ public:
     void setMessage(const QString &msg);
     void setTextColor(const QString &color);
     void setMaxHeight(const int &m)   { setMaximumHeight(m); maxHeight = m; }
+    void setMaxWidth(const int &m)   { setMaximumWidth(m); maxWidth = m; }
+    void setSize( const int &w, const int &h ) { setMaxHeight(h); setMaxWidth(w); }
 private:
     QTimeLine *timeLine;
     QLabel *message;
-    QToolButton *btnClose;
+    QLabel *btnClose;
     QHBoxLayout *hLayout;
     QLabel *img;
     QWidget *m_parent;
@@ -61,6 +62,7 @@ private:
     bool m_onTop;
     bool closedByUser;
     int maxHeight;
+    int maxWidth;
     int animRate;
 private slots:
     void animate(const int &step);
