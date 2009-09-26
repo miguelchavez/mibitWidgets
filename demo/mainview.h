@@ -55,6 +55,7 @@ private slots:
     void showDialog3();
     void showDialog4();
     void showNotify();
+    void showNotify2();
 };
 
 #endif // MAINVIEW_H

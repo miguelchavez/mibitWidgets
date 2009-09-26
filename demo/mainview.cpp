@@ -57,6 +57,7 @@ mainView::mainView(QWidget *parent)
     connect(ui->btnDialog4, SIGNAL(clicked()), SLOT(showDialog4()));
 
     connect(ui->btnNotify, SIGNAL(clicked()), this, SLOT(showNotify()) );
+    connect(ui->btnNotify2, SIGNAL(clicked()), this, SLOT(showNotify2()) );
 
     QTimer::singleShot(700,this,SLOT(showDialog1()));
     QTimer::singleShot(0,this,SLOT(centerWindow()));
@@ -101,6 +102,7 @@ void mainView::showDialog2()
 {
     dialog1->setTextColor("Yellow"); //Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("<html>Dialog with a <b>slide Up</b> animation. Also you can <b><i>shake it</i></b> to take more attention.</html>", atSlideUp);
+    dialog1->setShakeTTL(9000);
     QTimer::singleShot(2000,dialog1,SLOT(shake()));
 }
 
@@ -113,12 +115,20 @@ void mainView::showDialog3()
 
 void mainView::showDialog4()
 {
-      dialog1->setTextColor("Orange");//Ensure to pass a valid Qt-CSS color name.
+    dialog1->setTextColor("Orange");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Horizontally Animation.", atGrowCenterH);
 }
 
 void mainView::showNotify()
 {
     notifier->setMaxHeight(100);
-    notifier->showNotification("This is an animated notification, sliding down the window",5000);
+    notifier->setOnBottom(false);
+    notifier->showNotification("This is an animated notification, sliding down from top",5000);
+}
+
+void mainView::showNotify2()
+{
+    notifier->setMaxHeight(100);
+    notifier->setOnBottom(true);
+    notifier->showNotification("This is an animated notification, sliding up from bottom",5000);
 }

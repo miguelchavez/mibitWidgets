@@ -42,6 +42,7 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     setMaxHeight(maxH); //default sizes
     setMaxWidth(maxW);
     animRate = 500; //default animation speed (half second rate).
+    shakeTimeToLive = 0;
     par = false; parTimes = 0;
 
 
@@ -217,11 +218,11 @@ void MibitDialog::setTextColor(const QString &color)
 void MibitDialog::shake()
 {
     shakeTimer->start();
+    if ( shakeTimeToLive > 0 ) QTimer::singleShot(shakeTimeToLive,shakeTimer,SLOT(stop()));
 }
 
 void MibitDialog::shakeIt()
 {
-
     if (par) {
         if (parTimes < 5) {
             if ( parTimes % 2 == 0 )
