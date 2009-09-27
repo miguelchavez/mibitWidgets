@@ -41,14 +41,12 @@ public:
 private:
     Ui::mainView *ui;
     MibitTip *tip1;
-    MibitTip *tip2;
     MibitTip *tip3;
     MibitDialog *dialog1;
     MibitNotifier *notifier;
 private slots:
     void centerWindow();
     void showTip1();
-    void showTip2();
     void showTip3();
     void showDialog1();
     void showDialog2();
@@ -56,6 +54,7 @@ private slots:
     void showDialog4();
     void showNotify();
     void showNotify2();
+    void checkText(QString text);
 };
 
 #endif // MAINVIEW_H

@@ -32,10 +32,16 @@ MibitLineEdit::MibitLineEdit( QWidget *parent )
     drawEmptyMsg = false;
     actualColor  = 0;
     timer = new QTimer(this);
+    shakeTimeToLive = 0;
+    par = false; parTimes = 0;
+
+    shakeTimer = new QTimer(this);
+    shakeTimer->setInterval(20);
     timer->setInterval(30);
     emptyMessage = "Type here..."; //what about localization?
     connect(this, SIGNAL(textEdited( const QString & ) ), SLOT(onTextChange(const QString &)) );
     connect(timer, SIGNAL(timeout()), this, SLOT(stepColors()));
+    connect(shakeTimer,SIGNAL(timeout()), this, SLOT(shakeIt()));
 }
 
 MibitLineEdit::~MibitLineEdit ()
@@ -145,3 +151,35 @@ void MibitLineEdit::focusOutEvent( QFocusEvent *ev )
     QLineEdit::focusOutEvent( ev );
 }
 
+
+void MibitLineEdit::shake()
+{
+    shakeTimer->start();
+    QTimer::singleShot(3000,shakeTimer,SLOT(stop()));
+}
+
+void MibitLineEdit::shakeIt()
+{
+    if (par) {
+        if (parTimes < 5) {
+            if ( parTimes % 2 == 0 )
+                setGeometry(geometry().x()-3, geometry().y()+3, geometry().width(), geometry().height());
+            else
+                setGeometry(geometry().x()+3, geometry().y()+3, geometry().width(), geometry().height());
+        }
+        parTimes++;
+        if (parTimes >39) {
+            parTimes = 0;
+        }
+    }
+    else {
+        if (parTimes < 5) {
+            if ( parTimes % 2 == 0 )
+                setGeometry(geometry().x()+3, geometry().y()-3, geometry().width(), geometry().height());
+            else
+                setGeometry(geometry().x()-3, geometry().y()-3, geometry().width(), geometry().height());
+        }
+    }
+
+    par = !par;
+}

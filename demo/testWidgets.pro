@@ -7,8 +7,12 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainview.cpp \
     ../mibittip.cpp \
-    ../mibitdialog.cpp
+    ../mibitdialog.cpp \
+    ../mibitnotifier.cpp \
+    ../mibitlineedit.cpp
 HEADERS += mainview.h \
     ../mibittip.h \
-    ../mibitdialog.h
+    ../mibitdialog.h \
+    ../mibitnotifier.h \
+    ../mibitlineedit.h
 FORMS += mainview.ui

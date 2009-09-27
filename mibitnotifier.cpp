@@ -75,7 +75,6 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
 
     timeLine  = new QTimeLine(animRate, this);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
-    connect(btnClose,SIGNAL(clicked()),this, SLOT(hideOnUserRequest()));
     connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
 }
 

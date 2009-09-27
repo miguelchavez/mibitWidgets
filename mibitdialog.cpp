@@ -63,18 +63,17 @@ MibitDialog::MibitDialog( QWidget *parent, const QString &msg, const QString &fi
     img->setMargin(4);
 
     btnClose->setMaximumWidth(120);
-    //btnClose->setShortcut(Qt::Key_Escape);
 
     setLayout(vLayout);
     text->setWordWrap(true);
     text->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
-    text->setMargin(10);
+    text->setMargin(5);
+
 
     hLayout->addWidget(img,0,Qt::AlignCenter);
     hLayout->addWidget(text,1,Qt::AlignCenter);
     vLayout->addLayout(hLayout,2);
     vLayout->addWidget(btnClose,1,Qt::AlignCenter);
-
     timeLine  = new QTimeLine(animRate, this);
     wTimeLine = new QTimeLine(2000, this);
     wTimeLine->setFrameRange(90,190);

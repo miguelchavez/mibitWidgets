@@ -34,17 +34,17 @@ mainView::mainView(QWidget *parent)
 {
     ui->setupUi(this);
 
-    tip1 = new MibitTip(this, ui->dtedit, "tip.svg",QPixmap("important.png") );
-    tip2 = new MibitTip(this, ui->edit1, "tip.svg", QPixmap("important.png") );
+    ui->lineEdit->setEmptyMessage("Type 'mibit' to see what happens");
+
+    tip1 = new MibitTip(this, ui->lineEdit, "tip.svg",QPixmap("important.png") );
     tip3 = new MibitTip(this, ui->btnTest3, "tip.svg", QPixmap("important.png"), tpAbove );
 
-    dialog1 = new MibitDialog(this,"Welcome to mibitWidgets Demo!","dialog-theme.svg",QPixmap("face-smile.png"), atSlideDown );
+    dialog1 = new MibitDialog(this,"Nothing","dialog-theme.opaque.svg",QPixmap("face-smile.png"), atSlideDown );
     dialog1->setSize(300,150);
 
     notifier = new MibitNotifier(this,"notifier.svg",QPixmap("information.png"),QPixmap("close.png"));//onTop = true
 
     connect(ui->btnTest1, SIGNAL(clicked()), SLOT(showTip1()));
-    connect(ui->btnTest2, SIGNAL(clicked()), SLOT(showTip2()));
     connect(ui->btnTest3, SIGNAL(clicked()), SLOT(showTip3()));
 
 
@@ -55,6 +55,7 @@ mainView::mainView(QWidget *parent)
 
     connect(ui->btnNotify, SIGNAL(clicked()), this, SLOT(showNotify()) );
     connect(ui->btnNotify2, SIGNAL(clicked()), this, SLOT(showNotify2()) );
+    connect(ui->lineEdit,SIGNAL(textEdited(QString)), this, SLOT(checkText(QString)));
 
     QTimer::singleShot(700,this,SLOT(showDialog1()));
     QTimer::singleShot(0,this,SLOT(centerWindow()));
@@ -79,11 +80,6 @@ void mainView::showTip1()
     tip1->showTip("This is a demo for the mibitTip class.. The tip slides down below its partner control.");
 }
 
-void mainView::showTip2()
-{
-    tip2->showTip("This is a demo for the mibitTip class.. Just more text to display.");
-}
-
 void mainView::showTip3()
 {
     tip3->showTip("This is a demo for the mibitTip class.. We also can draw it above the control, sliding up..");
@@ -91,27 +87,31 @@ void mainView::showTip3()
 
 void mainView::showDialog1()
 {
+    dialog1->setSVG("dialog-theme.opaque.svg");
     dialog1->setTextColor("White");//Ensure to pass a valid Qt-CSS color name.
-    dialog1->showDialog("Dialog with a slide Down Animation", atSlideDown);
+    dialog1->showDialog("Welcome to mibitWidgets Demo!<br>This is a completely opaque window, you can change its opacity adding transparency on the SVG.", atSlideDown);
 }
 
 void mainView::showDialog2()
 {
+    dialog1->setSVG("dialog-theme.svg");
     dialog1->setTextColor("Yellow"); //Ensure to pass a valid Qt-CSS color name.
-    dialog1->showDialog("<html>Dialog with a <b>slide Up</b> animation. Also you can <b><i>shake it</i></b> to take more attention.</html>", atSlideUp);
+    dialog1->showDialog("<html>Semi transparent Dialog, enabled by <b>transparency</b> in the <i>SVG file</i>. Also you can <b><i>shake it</i></b> to take more attention.</html>", atSlideUp);
     dialog1->setShakeTTL(9000);
-    QTimer::singleShot(2000,dialog1,SLOT(shake()));
+    QTimer::singleShot(1000,dialog1,SLOT(shake()));
 }
 
 void mainView::showDialog3()
 {
+    dialog1->setSVG("dialog-theme.opaque.svg");
     dialog1->setTextColor("Gray");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Vertically Animation. You can Change the message color with the setTextColor() method.", atGrowCenterV);
-    QTimer::singleShot(3000,dialog1,SLOT(wave()));
+    QTimer::singleShot(1000,dialog1,SLOT(wave()));
 }
 
 void mainView::showDialog4()
 {
+    dialog1->setSVG("dialog-theme.svg");
     dialog1->setTextColor("Orange");//Ensure to pass a valid Qt-CSS color name.
     dialog1->showDialog("Dialog with a Grow Horizontally Animation.", atGrowCenterH);
 }
@@ -128,4 +128,9 @@ void mainView::showNotify2()
     notifier->setMaxHeight(100);
     notifier->setOnBottom(true);
     notifier->showNotification("This is an animated notification, sliding up from bottom",5000);
+}
+
+void mainView::checkText(QString text)
+{
+    if (text.toLower() == "mibit") ui->lineEdit->shake();
 }

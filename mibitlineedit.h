@@ -68,11 +68,18 @@ class MibitLineEdit : public QLineEdit
     bool    autoClear;
     int     actualColor;
     QTimer  *timer;
+    QTimer  *shakeTimer;
+    int shakeTimeToLive;
+    bool par;
+    unsigned int parTimes;
 
   private slots:
     void    onTextChange(const QString &text);
     void    clearError();
     void    stepColors();
+    void shakeIt();
+public slots:
+    void shake();
 };
 
 #endif // MibitLineEdit_H
