@@ -80,32 +80,34 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
 
 void MibitNotifier::showNotification( const QString &msg, const int &timeToLive) //timeToLive = 0 : not auto hide it.
 {
-    //set default msg if the sent is empty.
-    if (msg.isEmpty()) setMessage(message->text()); else setMessage( msg );
+    /// Warning: if a tip is showing, if another showTip() is called, it is ignored.
+    if (timeLine->state() == QTimeLine::NotRunning && size().height() <= 0) {
+        //set default msg if the sent is empty.
+        if (msg.isEmpty()) setMessage(message->text()); else setMessage( msg );
+        //change svg skin if is not on top.
+        if (!m_onTop) setSVG("rotated_"+m_fileName); else setSVG(m_fileName);
+        setGeometry(-1000,-1000,0,0);
+        show();
+        //update steps for animation, now that the window is showing.
+        int maxStep; int minStep = 0;
 
-    if (!m_onTop) setSVG("rotated_"+m_fileName); else setSVG(m_fileName);
+        if ( m_onTop ) {
+            minStep = -maxHeight;
+            maxStep =  0;
+        } else {
+            maxStep = m_parent->geometry().height()-maxHeight;
+            minStep = m_parent->geometry().height();
+        }
+        //qDebug()<<" MaxStep:"<<maxStep<<" MinStep:"<<minStep;
 
-    setGeometry(-1000,-1000,0,0);
-    show();
-    //update steps for animation, now that the window is showing.
+        timeLine->setFrameRange(minStep,maxStep);
+        //make it grow
+        timeLine->setDirection(QTimeLine::Forward);
+        timeLine->start();
+        btnClose->setFocus();
 
-    int maxStep; int minStep = 0;
-
-    if ( m_onTop ) {
-        maxStep = maxHeight;
-        minStep = 0;
-    } else {
-        maxStep = m_parent->geometry().height()-maxHeight;
-        minStep = m_parent->geometry().height();
-    }
-
-    timeLine->setFrameRange(minStep,maxStep);
-    //make it grow
-    timeLine->setDirection(QTimeLine::Forward);
-    timeLine->start();
-    btnClose->setFocus();
-
-    if (timeToLive > 0 ) QTimer::singleShot(timeToLive,this,SLOT(hideDialog()));
+        if (timeToLive > 0 ) QTimer::singleShot(timeToLive,this,SLOT(hideDialog()));
+    } /*else qDebug()<<"notification is already showing... "<<size();*/
 }
 
 void MibitNotifier::animate(const int &step)
@@ -122,18 +124,15 @@ void MibitNotifier::animate(const int &step)
     dRect.setX(newX);
     setFixedWidth(newW);
 
-    if (m_onTop) { // Sliding from top
-        dRect.setY(0);
-        setGeometry(dRect);
-        setFixedHeight(step);
-    } else {       // Sliding from bottom
-        int nh = pheight-step;
-        if ( nh < min_H ) nh = min_H;
-        dRect.setY(step);
-        setGeometry(dRect);
-        setFixedHeight(nh);
+    dRect.setY(step);
+    setGeometry(dRect);
+    setFixedHeight(maxHeight);
 
-    }
+    if (m_onTop) { // Sliding from top
+        if (step == -maxHeight) setFixedHeight(0);
+    } else {       // Sliding from bottom
+        if (step == m_parent->geometry().height()) setFixedHeight(0);
+    } 
 }
 
 void MibitNotifier::hideOnUserRequest()
@@ -159,7 +158,8 @@ void MibitNotifier::onAnimationFinished()
 
 void MibitNotifier::setOnBottom(const bool &sOnBottom)
 {
-    m_onTop = !sOnBottom;
+    // only changes the position when the notification is not showing..
+    if (timeLine->state() == QTimeLine::NotRunning && size().height() <= 0)    m_onTop = !sOnBottom;
 }
 
 
