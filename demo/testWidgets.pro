@@ -10,13 +10,11 @@ SOURCES += main.cpp \
     ../mibitdialog.cpp \
     ../mibitnotifier.cpp \
     ../mibitlineedit.cpp \
-    ../mibitbutton.cpp \
     ../mibitfloatpanel.cpp
 HEADERS += mainview.h \
     ../mibittip.h \
     ../mibitdialog.h \
     ../mibitnotifier.h \
     ../mibitlineedit.h \
-    ../mibitbutton.h \
     ../mibitfloatpanel.h
 FORMS += mainview.ui
