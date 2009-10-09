@@ -24,6 +24,7 @@
 class MibitTip;
 class MibitDialog;
 class MibitNotifier;
+class MibitFloatPanel;
 
 namespace Ui
 {
@@ -44,6 +45,7 @@ private:
     MibitTip *tip3;
     MibitDialog *dialog1;
     MibitNotifier *notifier;
+    MibitFloatPanel *floatPanel;
 private slots:
     void centerWindow();
     void showTip1();

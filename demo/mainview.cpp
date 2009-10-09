@@ -24,6 +24,7 @@
 #include "../mibittip.h"
 #include "../mibitdialog.h"
 #include "../mibitnotifier.h"
+#include "../mibitfloatpanel.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -42,11 +43,21 @@ mainView::mainView(QWidget *parent)
     dialog1 = new MibitDialog(this,"Nothing","dialog-theme.opaque.svg",QPixmap("face-smile.png"), atSlideDown );
     dialog1->setSize(300,150);
 
+
+    floatPanel = new MibitFloatPanel(this,"rotated_panel.svg",Bottom);
+    floatPanel->setSize(350,200);
+    floatPanel->addWidget(ui->toFloat);
+    QTimer::singleShot(3000,floatPanel,SLOT(showPanel()));
+
     notifier = new MibitNotifier(this,"notifier.svg",QPixmap("information.png"),QPixmap("close.png"));//onTop = true
+
+    connect(ui->btnClosePanel, SIGNAL(clicked()), floatPanel, SLOT(hideOnUserRequest()));
+    connect(ui->btnQuit, SIGNAL(clicked()),qApp, SLOT(quit()));
+    ui->slider->setRange(0,100);
+    connect(ui->slider, SIGNAL(valueChanged(int)), ui->progressBar, SLOT(setValue(int)));
 
     connect(ui->btnTest1, SIGNAL(clicked()), SLOT(showTip1()));
     connect(ui->btnTest3, SIGNAL(clicked()), SLOT(showTip3()));
-
 
     connect(ui->btnDialog1, SIGNAL(clicked()), SLOT(showDialog1()));
     connect(ui->btnDialog2, SIGNAL(clicked()), SLOT(showDialog2()));
@@ -120,14 +131,14 @@ void mainView::showNotify()
 {
     notifier->setSize(200,100);
     notifier->setOnBottom(false);
-    notifier->showNotification("This is an animated notification, sliding down from top",5000);
+    notifier->showNotification("This is an animated notification, sliding down from top. It is semitransparent.",5000);
 }
 
 void mainView::showNotify2()
 {
     notifier->setMaxHeight(100);
     notifier->setOnBottom(true);
-    notifier->showNotification("This is an animated notification, sliding up from bottom",5000);
+    notifier->showNotification("This is an animated notification, sliding up from bottom. It is completely opaque.",5000);
 }
 
 void mainView::checkText(QString text)
