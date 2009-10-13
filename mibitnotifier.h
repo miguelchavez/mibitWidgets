@@ -40,7 +40,7 @@ class MibitNotifier : public QSvgWidget
 {
 Q_OBJECT
 public:
-    MibitNotifier(QWidget *parent = 0, const QString &file = 0, const QPixmap &icon = 0, const QPixmap &closeIcon =0, const bool &onTop= true);
+    MibitNotifier(QWidget *parent = 0, const QString &file = 0, const QPixmap &icon = 0, const bool &onTop= true);
     ~MibitNotifier();
     void showNotification( const QString &msg = 0, const int &timeToLive = 0); //timeToLive = 0 : not auto hide it.
     void setOnBottom(const bool &sOnBottom = true);
@@ -54,13 +54,12 @@ public:
 private:
     QTimeLine *timeLine;
     QLabel *message;
-    QLabel *btnClose;
     QHBoxLayout *hLayout;
     QLabel *img;
     QWidget *m_parent;
     QString m_fileName;
+    bool m_canClose;
     bool m_onTop;
-    bool closedByUser;
     int maxHeight;
     int maxWidth;
     int animRate;
@@ -71,7 +70,6 @@ private slots:
     void onAnimationFinished();
 protected:
     void mousePressEvent ( QMouseEvent * event );
-    void keyPressEvent ( QKeyEvent * event );
 };
 
 #endif // MIBITNOTIFIER_H

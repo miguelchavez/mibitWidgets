@@ -28,17 +28,16 @@
 #include <QVBoxLayout>
 #include <QTimeLine>
 #include <QTimer>
-#include <QKeyEvent>
 #include <QDebug>
 
-MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap &icon, const QPixmap &closeIcon, const bool &onTop)
+MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap &icon, const bool &onTop)
         : QSvgWidget( parent )
 {
     if (file != 0) setSVG(file);
 
     m_parent = parent;
     m_onTop = onTop;
-    closedByUser = false;
+    m_canClose = false;
     m_fileName = file;
     setMinimumHeight(100);
     setFixedSize(0,0); //until show we grow it
@@ -49,7 +48,6 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     img        = new QLabel();
     hLayout    = new QHBoxLayout();
     message    = new QLabel("");
-    btnClose   = new QLabel(""); //only an image
 
 
     img->setPixmap(icon);
@@ -58,12 +56,6 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
     img->setAlignment(Qt::AlignLeft);
     img->setMargin(4);
 
-    btnClose->setPixmap(closeIcon);
-    btnClose->setMaximumHeight(34); //the icon size is hardcoded now.
-    btnClose->setMaximumWidth(38);
-    btnClose->setToolTip("Close Notification"); //what about translations?
-    btnClose->setFixedSize(38,36);
-
     setLayout(hLayout);
     message->setWordWrap(true);
     message->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
@@ -71,7 +63,6 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
 
     hLayout->addWidget(img,0,Qt::AlignLeft);
     hLayout->addWidget(message,1,Qt::AlignLeft);
-    hLayout->addWidget(btnClose,0,Qt::AlignRight);
 
     timeLine  = new QTimeLine(animRate, this);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
@@ -81,7 +72,7 @@ MibitNotifier::MibitNotifier(QWidget *parent, const QString &file, const QPixmap
 void MibitNotifier::showNotification( const QString &msg, const int &timeToLive) //timeToLive = 0 : not auto hide it.
 {
     /// Warning: if a tip is showing, if another showTip() is called, it is ignored.
-    if (timeLine->state() == QTimeLine::NotRunning && size().height() <= 0) {
+    if (timeLine->state() == QTimeLine::NotRunning && !m_canClose /*size().height() <= 0*/) {
         //set default msg if the sent is empty.
         if (msg.isEmpty()) setMessage(message->text()); else setMessage( msg );
         //change svg skin if is not on top.
@@ -104,10 +95,9 @@ void MibitNotifier::showNotification( const QString &msg, const int &timeToLive)
         //make it grow
         timeLine->setDirection(QTimeLine::Forward);
         timeLine->start();
-        btnClose->setFocus();
 
         if (timeToLive > 0 ) QTimer::singleShot(timeToLive,this,SLOT(hideDialog()));
-    } /*else qDebug()<<"notification is already showing... "<<size();*/
+    }
 }
 
 void MibitNotifier::animate(const int &step)
@@ -138,22 +128,22 @@ void MibitNotifier::animate(const int &step)
 void MibitNotifier::hideOnUserRequest()
 {
     hideDialog();
-    closedByUser = true;
 }
 
 void MibitNotifier::hideDialog()
 {
-    if ( !closedByUser ) {
+    if ( m_canClose ) {
         timeLine->toggleDirection();//reverse!
         timeLine->start();
-    } else closedByUser = !closedByUser;
+    }
 }
 
 void MibitNotifier::onAnimationFinished()
 {
     if (timeLine->direction() == QTimeLine::Backward) {
         close();
-    }
+        m_canClose = false;
+    } else m_canClose = true;
 }
 
 void MibitNotifier::setOnBottom(const bool &sOnBottom)
@@ -187,16 +177,6 @@ void MibitNotifier::mousePressEvent ( QMouseEvent * )
 {
     hideOnUserRequest();
 }
-
-
-void MibitNotifier::keyPressEvent ( QKeyEvent * event )
-{
-    if ( event->key() == Qt::Key_Escape )
-    {
-        hideOnUserRequest();
-    } //else ignore event.
-}
-
 
 MibitNotifier::~MibitNotifier() {}
 

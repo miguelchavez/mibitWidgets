@@ -30,15 +30,20 @@ class QPixmap;
 
 /**
   * This class is used to display an animated floating panel
-  * on Top, Bottom, Left or Right edges of the parent.
-  * Are svg themed and borderless.
+  * on Top, Bottom, Left or Right edges of its parent.
+  * Svg themed and borderless.
+  *
+  * The panel content is added with the addWidget() method,
+  * The simple way is to create a QWidget with all its content
+  * with its layout -in designer or by code-.
+  * It will be reparented automatically when added to the panel.
+  * Dont forget to set the panel size according to your needs.
   *
   */
 
-//namespace MibitFloatPanel {
 
     enum PanelPosition  {Top = 1, Bottom = 2, Left = 3, Right = 4 };
-    enum PanelConstants {pMimH= 100, pMinW = 100 };
+    enum PanelConstants {pMinH= 100, pMinW = 100 };
 
 
 class MibitFloatPanel : public QSvgWidget
@@ -75,5 +80,4 @@ protected:
     void leaveEvent ( QEvent * event );
 };
 
-//} //end namespace
 #endif // MIBITFLOATPANEL_H

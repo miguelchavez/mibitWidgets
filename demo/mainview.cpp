@@ -44,12 +44,12 @@ mainView::mainView(QWidget *parent)
     dialog1->setSize(300,150);
 
 
-    floatPanel = new MibitFloatPanel(this,"rotated_panel.svg",Bottom);
+    floatPanel = new MibitFloatPanel(this,"rotated_panel.svg", Bottom);
     floatPanel->setSize(350,200);
     floatPanel->addWidget(ui->toFloat);
     QTimer::singleShot(3000,floatPanel,SLOT(showPanel()));
 
-    notifier = new MibitNotifier(this,"notifier.svg",QPixmap("information.png"),QPixmap("close.png"));//onTop = true
+    notifier = new MibitNotifier(this,"notifier.svg",QPixmap("information.png"));//onTop = true
 
     connect(ui->btnClosePanel, SIGNAL(clicked()), floatPanel, SLOT(hideOnUserRequest()));
     connect(ui->btnQuit, SIGNAL(clicked()),qApp, SLOT(quit()));

@@ -50,21 +50,35 @@ MibitFloatPanel::MibitFloatPanel(QWidget *parent, const QString &file, PanelPosi
     hLayout    = new QHBoxLayout();
     setLayout(hLayout);
 
-
-
+    //Postition it on its place
     QRect windowGeom = m_parent->geometry();
     int midPointX = (windowGeom.width()/2);
-    int newX; int newW;
+    int midPointY = (windowGeom.height()/2);
+    int newX; int newY;
     QRect dRect;
-    int pheight = m_parent->geometry().height();
-    if (maxWidth < pMinW ) newW = pMinW; else newW = maxWidth;
-    if ((midPointX-(newW/2)) < 0) newX = 0; else newX = midPointX - (newW/2);
+    if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - (maxWidth/2);
+    if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - (maxHeight/2);
+
+    switch (position) {
+        case Top:
+            newY = 10-maxHeight;
+        break;
+        case Bottom:
+            newY = parent->height()+height()-10;
+        break;
+        case Left:
+            newX = 10-maxWidth;
+        break;
+        case Right:
+            newX = parent->width()-10;
+        break;
+    }
+
     dRect.setX(newX);
-    dRect.setY(height()/2);
-    setFixedWidth(newW);
+    dRect.setY(newY);
+    setFixedWidth(maxWidth); //width maybe is not yet defined.
+    setFixedHeight(maxHeight);
     setGeometry(dRect);
-
-
 
     timeLine  = new QTimeLine(animRate, this);
     connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
@@ -81,25 +95,36 @@ void MibitFloatPanel::showPanel()
     if (timeLine->state() == QTimeLine::NotRunning && !canBeHidden) {
         setGeometry(-1000,-1000,0,0);
         show();
-        //update steps for animation, now that the window is showing.
+        //update steps for animation, now that the panel is showing.
         int maxStep; int minStep = 0;
 
-        //FIXME: add left and right positions!
-        if ( m_position == Top ) {
-            minStep = -maxHeight+10;
-            maxStep =  -6;
-        } else {
-            maxStep = m_parent->geometry().height()-maxHeight;
-            minStep = m_parent->geometry().height()-10;
+        switch (m_position) {
+            case Top :
+                minStep = -maxHeight+10;
+                maxStep =  -6;
+            break;
+            case Bottom:
+                maxStep = m_parent->geometry().height()-maxHeight;
+                minStep = m_parent->geometry().height()-10;
+            break;
+            case Left:
+                minStep = -maxWidth+10;
+                maxStep = -6;
+            break;
+            case Right:
+                minStep = m_parent->geometry().width()-10;
+                maxStep = m_parent->geometry().width()-maxWidth;
+            break;
+            default:
+            break;
         }
-//        qDebug()<<" MaxStep:"<<maxStep<<" MinStep:"<<minStep<<" pos "<<m_position;
 
         timeLine->setFrameRange(minStep,maxStep);
         //make it grow
         timeLine->setDirection(QTimeLine::Forward);
         timeLine->start();
 
-    } //else qDebug()<<"Panel is already showing... "<<geometry();
+    } 
 }
 
 void MibitFloatPanel::animate(const int &step)
@@ -107,29 +132,30 @@ void MibitFloatPanel::animate(const int &step)
     //get some sizes...
     QRect windowGeom = m_parent->geometry();
     int midPointX = (windowGeom.width()/2);
-    int newX; int newW;
+    int midPointY = (windowGeom.height()/2);
+    int newX;  int newY;
     QRect dRect;
-    int pheight = m_parent->geometry().height();
-    if (maxWidth < pMinW ) newW = pMinW; else newW = maxWidth;
-    if ((midPointX-(newW/2)) < 0) newX = 0; else newX = midPointX - (newW/2);
+    if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - (maxWidth/2);
+    if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - (maxHeight/2);
 
-    dRect.setX(newX);
-    setFixedWidth(newW);
+    switch (m_position) {
+        case Bottom:
+        case Top:
+            dRect.setX(newX);
+            dRect.setY(step);
+        break;
+        case Left:
+        case Right:
+            dRect.setY(newY);
+            dRect.setX(step);
+        break;
+        default:
+        break;
+    }
 
-    dRect.setY(step);
-    setGeometry(dRect);
     setFixedHeight(maxHeight);
-
-    if (m_position == Top) { // Sliding from top
-        if (step == -maxHeight+10) {
-            setFixedHeight(maxHeight);
-        }
-    } else {       // Sliding from bottom
-        if (step == m_parent->geometry().height()-10) {
-            setFixedHeight(maxHeight);
-        }
-    } 
-    //qDebug()<<"Step:"<<step<< "Height:"<< rect().height()<<" maxHeight:"<<maxHeight<<" Position:"<<m_position;
+    setFixedWidth(maxWidth);
+    setGeometry(dRect);
 }
 
 void MibitFloatPanel::hideOnUserRequest()
@@ -159,18 +185,19 @@ void MibitFloatPanel::setPosition(const PanelPosition pos)
 }
 
 
+//NOTE: The svg file is not rendered correctly. It does not render the blur, i.e. the shadows
 void MibitFloatPanel::setSVG(const QString &file)
 {
     load(file);
 }
 
 
-void MibitFloatPanel::enterEvent ( QEvent * event )
+void MibitFloatPanel::enterEvent ( QEvent * )
 {
     QTimer::singleShot(100,this,SLOT(showPanel()));
 }
 
-void MibitFloatPanel::leaveEvent( QEvent *event )
+void MibitFloatPanel::leaveEvent( QEvent * )
 {
     QTimer::singleShot(100,this,SLOT(hideOnUserRequest()));
 }
