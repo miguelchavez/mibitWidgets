@@ -32,14 +32,14 @@
 MibitFloatPanel::MibitFloatPanel(QWidget *parent, const QString &file, PanelPosition position)
         : QSvgWidget( parent )
 {
-    setMouseTracking(true);
+    //setMouseTracking(true);
 
     if (file != 0) setSVG(file);
 
     m_position = position;
     m_parent = parent;
     m_fileName = file;
-    canBeHidden = false; //at the begining is hiden.
+    canBeHidden = false; //at the begining is hidden.
     setMinimumHeight(100);
     setMinimumWidth(100);
     setMaxHeight(100);
@@ -51,6 +51,15 @@ MibitFloatPanel::MibitFloatPanel(QWidget *parent, const QString &file, PanelPosi
     setLayout(hLayout);
 
     //Postition it on its place
+    reposition();
+
+    timeLine  = new QTimeLine(animRate, this);
+    connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
+    connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
+}
+
+void MibitFloatPanel::reposition()
+{
     QRect windowGeom = m_parent->geometry();
     int midPointX = (windowGeom.width()/2);
     int midPointY = (windowGeom.height()/2);
@@ -59,18 +68,18 @@ MibitFloatPanel::MibitFloatPanel(QWidget *parent, const QString &file, PanelPosi
     if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - (maxWidth/2);
     if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - (maxHeight/2);
 
-    switch (position) {
+    switch (m_position) {
         case Top:
             newY = 10-maxHeight;
         break;
         case Bottom:
-            newY = parent->height()+height()-10;
+            newY = m_parent->height()+height()-10;
         break;
         case Left:
             newX = 10-maxWidth;
         break;
         case Right:
-            newX = parent->width()-10;
+            newX = m_parent->width()-10;
         break;
     }
 
@@ -79,10 +88,6 @@ MibitFloatPanel::MibitFloatPanel(QWidget *parent, const QString &file, PanelPosi
     setFixedWidth(maxWidth); //width maybe is not yet defined.
     setFixedHeight(maxHeight);
     setGeometry(dRect);
-
-    timeLine  = new QTimeLine(animRate, this);
-    connect(timeLine, SIGNAL(frameChanged(int)), this, SLOT(animate(int)));
-    connect(timeLine,SIGNAL(finished()), this, SLOT(onAnimationFinished()));
 }
 
 void MibitFloatPanel::addWidget(QWidget * widget)
@@ -138,6 +143,7 @@ void MibitFloatPanel::animate(const int &step)
     if ((midPointX-(maxWidth/2)) < 0) newX = 0; else newX = midPointX - (maxWidth/2);
     if ((midPointY-(maxHeight/2)) < 0) newY = 0; else newY = midPointY - (maxHeight/2);
 
+
     switch (m_position) {
         case Bottom:
         case Top:
@@ -181,7 +187,11 @@ void MibitFloatPanel::onAnimationFinished()
 void MibitFloatPanel::setPosition(const PanelPosition pos)
 {
     // only changes the position when the notification is not showing..
-    if (timeLine->state() == QTimeLine::NotRunning && size().height() <= 0)  m_position = pos;
+    if (timeLine->state() == QTimeLine::NotRunning && !canBeHidden) {
+        m_position = pos;
+        //recalculate its rect and show it there...
+        reposition();
+    }
 }
 
 

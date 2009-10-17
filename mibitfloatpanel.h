@@ -69,6 +69,7 @@ private:
     int maxWidth;
     int animRate;
     PanelPosition m_position;
+    void reposition();
 private slots:
     void animate(const int &step);
     void hideDialog();

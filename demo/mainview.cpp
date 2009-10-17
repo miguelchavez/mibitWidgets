@@ -144,4 +144,5 @@ void mainView::showNotify2()
 void mainView::checkText(QString text)
 {
     if (text.toLower() == "mibit") ui->lineEdit->shake();
+    floatPanel->setPosition(Left);
 }
