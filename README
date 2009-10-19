@@ -52,6 +52,19 @@ MibitDialog --------------------------------------
   Can contain one icon and, text message, and a 
   close button.
 
+
+MibitFloatPanel ---------------------------------
+
+  This class is used as a special panel to hide
+  itself when the mouse cursor leaves it bounds 
+  and show when the mouse cursor enters its 
+  visible -minimum- area.
+
+  It is designed to save space on screen when 
+  having a lot of things to show only on certain
+  conditions. For example to show a group of
+  widgets related to a database filter options.
+
 ----------------------------------------------------
 
 
