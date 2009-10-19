@@ -2,18 +2,18 @@
  *   Copyright (C) 2009 by Miguel Chavez Gamboa                            *
  *   miguel@lemonpos.org                                                   *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Lesser General  Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
+ *   This library is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
+ *   GNU Lesser General  Public License for more details.                  *
  *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
+ *   You should have received a copy of the GNU Lesser General  Public     *
+ *   License along with this program; if not, write to the                 *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTimeLine>
+#include "ease-effects/qtimeline.h"
 #include <QTimer>
 #include <QPushButton>
 #include <QKeyEvent>
@@ -120,9 +121,9 @@ void MibitDialog::showDialog(const QString &msg, AnimationType animation )
             break;
     }
 
-    //timeLine->setCurveShape(QTimeLine::EaseOutCurve); //QTimeLine::SineCurve: Hacerlo criticamente amortiguado
+    /// QTimeLine: Hacer una curva de movimiento armonico criticamente amortiguado.
     timeLine->setFrameRange(minStep,maxStep);
-    //make it grow
+    //make it grow...
     timeLine->setDirection(QTimeLine::Forward);
     timeLine->start();
     btnClose->setFocus();
@@ -131,9 +132,6 @@ void MibitDialog::showDialog(const QString &msg, AnimationType animation )
 void MibitDialog::animate(const int &step)
 {
     //get some sizes...
-    int textW = text->width();
-    int textH = text->height();
-    int btnH = btnClose->height();
     QRect windowGeom = m_parent->geometry();
     int midPointX = (windowGeom.width()/2);
     int midPointY = (windowGeom.height()/2);
