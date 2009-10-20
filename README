@@ -4,11 +4,12 @@ mibitWidgets
 Author: Miguel Chavez Gamboa
         miguel@lemonpos.org
 
-License: GPL v2 
+License: LGPL v2 
 
 
 Description:
-This widgets were designed to be incorporated in the lemonPOS project. They are Qt widgets.
+This widgets were designed to be incorporated in the lemonPOS project. 
+They are Qt widgets.
 ====================================================
 
 Widgets Included:
