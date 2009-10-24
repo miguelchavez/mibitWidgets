@@ -49,6 +49,7 @@ MibitTip::MibitTip( QWidget *parent, QWidget *partner, const QString &file, cons
     m_partner= partner;
     m_tipPosition = drawOn;
     closedByUser = false;
+    timeToLive = 4000;
 
 
     //create labels
@@ -82,8 +83,9 @@ MibitTip::~MibitTip ()
 {
 }
 
-void MibitTip::showTip( const QString &msg)
+void MibitTip::showTip( const QString &msg, const int &ttl)
 {
+    timeToLive = ttl;
     /// Warning: if a tip is showing, if another showTip() is called, it is ignored.
     if (timeLine->state() == QTimeLine::NotRunning && size().height() <= 0) {
         text->setText( msg );
@@ -92,7 +94,7 @@ void MibitTip::showTip( const QString &msg)
         timeLine->setDirection(QTimeLine::Forward);
         timeLine->start();
         //autoShrink
-        QTimer::singleShot(5000, this, SLOT(autoHide()));
+        QTimer::singleShot(timeToLive-1000, this, SLOT(autoHide()));
     } //else qDebug()<<"Animation running... sorry";
 }
 
