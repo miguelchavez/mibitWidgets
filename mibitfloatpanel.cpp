@@ -168,6 +168,7 @@ void MibitFloatPanel::animate(const int &step)
 void MibitFloatPanel::hideOnUserRequest()
 {
     hideDialog();
+    emit hiddenOnUserRequest();
 }
 
 void MibitFloatPanel::hideDialog()
