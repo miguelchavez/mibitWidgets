@@ -213,6 +213,15 @@ void MibitFloatPanel::leaveEvent( QEvent * )
     if (m_mode == pmAuto) QTimer::singleShot(100,this,SLOT(hideOnUserRequest()));
 }
 
+void MibitDialog::keyPressEvent ( QKeyEvent * event )
+{
+    if ( event->key() == Qt::Key_Escape )
+    {
+        if (m_mode == pmManual)
+        hideOnUserRequest();
+    } //else ignore event.
+}
+
 MibitFloatPanel::~MibitFloatPanel() {}
 
 

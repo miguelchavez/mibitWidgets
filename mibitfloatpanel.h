@@ -83,6 +83,7 @@ private slots:
 protected:
     void enterEvent ( QEvent * event );
     void leaveEvent ( QEvent * event );
+    void keyPressEvent ( QKeyEvent * event );
 };
 
 #endif // MIBITFLOATPANEL_H
